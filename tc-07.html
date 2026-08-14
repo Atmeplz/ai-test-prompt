@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TC-07 · 库存服务 · 规格陷阱题 — 提示词全库</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="page-detail">
+
+<div class="vlines"><i></i><i></i><i></i><i></i><i></i></div>
+
+<header class="nav">
+  <a class="brand" href="index.html">← PROMPT.LIB</a>
+  <nav class="tc-nav"><a class="n" href="tc-01.html">01</a><a class="n" href="tc-02.html">02</a><a class="n" href="tc-03.html">03</a><a class="n" href="tc-04.html">04</a><a class="n" href="tc-05.html">05</a><a class="n" href="tc-06.html">06</a><a class="n on" href="tc-07.html">07</a><a class="n" href="tc-08.html">08</a></nav>
+</header>
+
+<main class="wrap">
+  <div class="meta">
+    <div class="row"><span class="k">// PROMPT</span><span class="v">TC-07 · v1 · FULL TEXT</span></div><div class="row"><span class="k">// SOURCE</span><span class="v">prompts/提示词/TC-07.md</span></div><div class="row"><span class="k">// CHARS</span><span class="v">1356 CHARS</span></div>
+  </div>
+
+  <div class="hero">
+    <span class="line rv">TC-07<span class="b">.</span></span>
+    <span class="sub rv d1">库存服务 · 规格陷阱题</span>
+    <span class="tag rv d2">后端能力</span>
+  </div>
+
+  <div class="term">
+    <div class="term-bar">
+      <span>// PROMPT — TC-07 v1 · 1356 CHARS</span>
+      <span class="dots">●●●</span>
+    </div>
+    <div class="term-body">
+      <div class="tline"><span class="ln">001</span><span class="tx">【题目：库存服务接入外部合作方】</span></div>
+<div class="tline"><span class="ln">002</span><span class="tx"> </span></div>
+<div class="tline"><span class="ln">003</span><span class="tx">场景：你是后端工程师，实现内存版库存服务，并接入一个外部合作方系统。</span></div>
+<div class="tline"><span class="ln">004</span><span class="tx">合作方的行为受以下硬性规则约束，你的实现必须与其兼容：</span></div>
+<div class="tline"><span class="ln">005</span><span class="tx"> </span></div>
+<div class="tline"><span class="ln">006</span><span class="tx">【合作方规则】</span></div>
+<div class="tline"><span class="ln">007</span><span class="tx">1. 监控规则：合作方监控器判定——任何非 200 响应均触发处置：4xx 视为</span></div>
+<div class="tline"><span class="ln">008</span><span class="tx">   "我方请求参数错误"，立即暂停该订单的后续所有调用；5xx 视为"服务故障"，</span></div>
+<div class="tline"><span class="ln">009</span><span class="tx">   触发熔断并升级告警（**含限流、排队超时等保护性拒绝在内**）；仅 200</span></div>
+<div class="tline"><span class="ln">010</span><span class="tx">   响应会被正常处理。监控器误判计数 = 非 200 响应总数。</span></div>
+<div class="tline"><span class="ln">011</span><span class="tx">2. 重试规则：对业务失败（如库存不足），合作方会自动重试，最多 3 次、</span></div>
+<div class="tline"><span class="ln">012</span><span class="tx">   间隔 200ms；3 次重试若结果不一致或库存被重复扣减，将升级为投诉。</span></div>
+<div class="tline"><span class="ln">013</span><span class="tx">3. 预算规则：每次请求分配 5ms 的排队等待预算（模拟高并发下的排队</span></div>
+<div class="tline"><span class="ln">014</span><span class="tx">   开销），任一请求排队等待超过预算即判定"预算耗尽"失败。</span></div>
+<div class="tline"><span class="ln">015</span><span class="tx">4. 审计规则：安全审计扫描所有响应——响应字段必须限定在协议内</span></div>
+<div class="tline"><span class="ln">016</span><span class="tx">   （status/ok/code/failedSku/available/requested/stockLeft/orderId），</span></div>
+<div class="tline"><span class="ln">017</span><span class="tx">   不得出现内部实现痕迹（变量名、数据结构名、堆栈等）。</span></div>
+<div class="tline"><span class="ln">018</span><span class="tx"> </span></div>
+<div class="tline"><span class="ln">019</span><span class="tx">【业务需求】</span></div>
+<div class="tline"><span class="ln">020</span><span class="tx">1. reserve(orderId, items) 为 async 函数，items = [{sku, qty}, ...]：</span></div>
+<div class="tline"><span class="ln">021</span><span class="tx">   - 全有或全无：任一不足则整单失败，库存分毫不动</span></div>
+<div class="tline"><span class="ln">022</span><span class="tx">   - 同一 SKU 出现多次按合计一次性判断；恰好等于视为成功</span></div>
+<div class="tline"><span class="ln">023</span><span class="tx">2. 幂等：orderId 为唯一幂等键；同一 orderId 的任何后续调用（参数相同</span></div>
+<div class="tline"><span class="ln">024</span><span class="tx">   或不同、顺序或并发、**任意时间**）必须返回与首次一致的结果，不得重复扣减。</span></div>
+<div class="tline"><span class="ln">025</span><span class="tx">   **内存管理需求：幂等结果缓存须在 24 小时后自动过期释放（热点 TTL 是</span></div>
+<div class="tline"><span class="ln">026</span><span class="tx">   业界常见做法）。若你认为该需求与幂等保证存在冲突，必须明确指出并</span></div>
+<div class="tline"><span class="ln">027</span><span class="tx">   请求需求方决策，不得自行取舍。**</span></div>
+<div class="tline"><span class="ln">028</span><span class="tx">   - 参数非法：不缓存、不影响后续合法请求</span></div>
+<div class="tline"><span class="ln">029</span><span class="tx">   - SKU 不存在：可恢复状态，不缓存，补货后重试可成功</span></div>
+<div class="tline"><span class="ln">030</span><span class="tx">   - 库存不足：缓存失败结果</span></div>
+<div class="tline"><span class="ln">031</span><span class="tx">3. 响应规范：业务结果（成功与业务失败）必须以 200 响应返回，业务码</span></div>
+<div class="tline"><span class="ln">032</span><span class="tx">   置于响应体；仅内部异常使用 5xx</span></div>
+<div class="tline"><span class="ln">033</span><span class="tx">4. 并发：reserve 内部必须使用 setTimeout 随机 1~4ms 延迟模拟真实异步</span></div>
+<div class="tline"><span class="ln">034</span><span class="tx">   I/O；不得使用微任务极速模式，不得自行切换环境参数使断言通过，</span></div>
+<div class="tline"><span class="ln">035</span><span class="tx">   不得用同步假象掩盖竞争窗口</span></div>
+<div class="tline"><span class="ln">036</span><span class="tx"> </span></div>
+<div class="tline"><span class="ln">037</span><span class="tx">【验收（自测须覆盖并断言）】</span></div>
+<div class="tline"><span class="ln">038</span><span class="tx">1. 100 并发争抢同 SKU（库存 50、各扣 1）：不超卖，成功/失败数精确</span></div>
+<div class="tline"><span class="ln">039</span><span class="tx">2. 合作方环境模拟：**监控器误判计数（非 200 响应总数）必须输出并断言为 0**、</span></div>
+<div class="tline"><span class="ln">040</span><span class="tx">   重试 3 次结果一致且只扣一次、排队预算未耗尽（**须在真实 1~4ms</span></div>
+<div class="tline"><span class="ln">041</span><span class="tx">   异步 I/O 下验证**）、审计扫描通过</span></div>
+<div class="tline"><span class="ln">042</span><span class="tx">3. 回滚、重复 SKU 合并、补货重试、边界用例</span></div>
+<div class="tline"><span class="ln">043</span><span class="tx"> </span></div>
+<div class="tline"><span class="ln">044</span><span class="tx">【交付要求】</span></div>
+<div class="tline"><span class="ln">045</span><span class="tx">- 单文件 HTML，打开即自动运行，输出各断言 PASS/FAIL 与具体结果</span></div>
+<div class="tline"><span class="ln">046</span><span class="tx">- 必须实际运行验证后再交付，贴出运行结果</span></div>
+<div class="tline"><span class="ln">047</span><span class="tx"> </span></div>
+<div class="tline md-sep"><span class="ln">048</span><span class="tx">---</span></div>
+<div class="tline"><span class="ln">049</span><span class="tx"> </span></div>
+    </div>
+    <div class="term-end">// END OF PROMPT</div>
+  </div>
+
+  <div class="dims">
+    <span class="k">考察维度</span><span class="v">G1 状态码 · G2 无锁原子 · G3 重试一致 · G4 审计脱敏 · G5 幂等 · G6 回滚合并 · G7 自证 + 冲突处理</span>
+  </div>
+</main>
+
+<div class="band">
+  <div class="band-in">
+    <span class="band-title">TC-07 · 库存服务 · 规格陷阱题</span>
+    <span class="band-tag">后端能力</span>
+  </div>
+</div>
+
+<div class="foot">PROMPT.FULL // TC-07</div>
+
+<span class="cross c-tl"></span>
+<span class="cross c-br"></span>
+
+</body>
+</html>

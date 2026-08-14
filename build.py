@@ -20,7 +20,7 @@ CASES = [
         name="3D 体素中国古典建筑群",
         en="VOXEL CLASSIC ARCHITECTURE",
         dim="空间建模",
-        dims="A1 空间想象 · A2 提示词复现 · A3 事实准确 · B3 主次与空间叙事 · B5 环境与光影 · B6 性能与代码",
+        dims="A1 空间想象 · A2 提示词复现 · A3 事实准确 · A4 主次与叙事 · A5 环境与光影 · A6 性能与代码",
         desc="Three.js 生成 Minecraft 风格中式古建群：主殿/配殿/山门/宝塔，中轴对称院落 + 飞檐翘角 + 光影氛围。",
     ),
     dict(
@@ -28,7 +28,7 @@ CASES = [
         name="3D 体素自然景观 · 山瀑布穿云",
         en="VOXEL LANDSCAPE · FALL & CLOUD",
         dim="世界理解与知识储备（Addon）",
-        dims="C1 地貌常识 · C2 水体物理 · C3 云雾层次 · C4 生态与光环境",
+        dims="B1 地貌常识 · B2 水体物理 · B3 云雾层次 · B4 生态与光环境",
         desc="体素山脉 + 瀑布倾泻 + 穿云遮挡关系，考察模型对自然地貌与水体物理的世界知识。",
     ),
     dict(
@@ -36,36 +36,52 @@ CASES = [
         name="前端落地页 · 户外机能风",
         en="LANDING PAGE · OUTDOOR GEAR",
         dim="视觉与交互设计",
-        dims="D1 提示词服从 · D2 视觉与交互 · D3 工程完备 · D4 代码质量",
+        dims="C1 提示词服从 · C2 视觉与交互 · C3 工程完备 · C4 代码质量",
         desc="不给风格约束的商业落地页：由模型自主设计一套自洽、有辨识度的视觉方案。",
     ),
     dict(
         id="TC-04",
-        name="悬疑小说续写",
-        en="MYSTERY NOVEL EXTENSION",
+        name="童话改编创作 · 小红帽反套路",
+        en="FAIRY TALE REWRITE · LITTLE RED RIDING HOOD",
         dim="文本创作",
-        dims="E1 表达准确 · E2 去AI味 · E3 逻辑自洽 · E4 风格与人设一致",
-        desc="给定开篇与结尾续写中间情节（≤1000 字），须自洽解释时间线矛盾并保持悬疑语感。",
+        dims="D1 提示词服从 · D2 过拟合程度 · D3 故事逻辑性 · D4 文学性",
+        desc="以《小红帽》人设为基础创作全新故事：情节必须与原作截然不同，考察过拟合/创意/文本能力（500~2000 字）。",
     ),
     dict(
         id="TC-05",
         name="公文理解提炼",
         en="OFFICIAL DOCUMENT MINING",
         dim="结构化理解",
-        dims="F1 提炼准确 · F2 语言规范 · F3 结构化输出 · F4 指令遵循 · F5 不臆造 · F6 逻辑组织",
+        dims="E1 议定事项 · E2 关键限定 · E3 格式 · E4 公文表达 · E5 约束遵守",
         desc="从会议纪要中提炼议定事项要点：限 7 条、限 500 字、按时间节点排序、零幻觉。",
     ),
     dict(
         id="TC-06",
+        name="论文解读 · 小众论文问答",
+        en="PAPER READING · Q&A",
+        dim="文本理解与信息提取",
+        dims="F1~F3 知识点覆盖 · F4 语风分析",
+        desc="阅读随附的小众科学论文（PDF），解答 3 个问题（每答 ≤1000 字）——考察 PDF 解析、要点提取与幻觉抑制。",
+    ),
+    dict(
+        id="TC-07",
         name="库存服务 · 规格陷阱题",
         en="INVENTORY SERVICE · TRAP SPEC",
         dim="后端能力",
-        dims="T1 幂等键范围 · T2 SKU不存在 · T3 非法参数 · T4 失败缓存 · T5 全有或全无 · T6 重复SKU · T7 恰好相等 · T8 时点语义",
-        desc="内存版库存服务接入外部合作方：幂等 + 并发 + 回滚 + 自证，八类规格陷阱逐项拦截。",
+        dims="G1 状态码 · G2 无锁原子 · G3 重试一致 · G4 审计脱敏 · G5 幂等 · G6 回滚合并 · G7 自证 + 冲突处理",
+        desc="内存版库存服务接入外部合作方：幂等 + 并发 + 回滚 + 自证，标准 vs 实践冲突 + 蜜罐陷阱逐项拦截。",
+    ),
+    dict(
+        id="TC-08",
+        name="黑洞模拟 · 广义相对论",
+        en="BLACK HOLE · GENERAL RELATIVITY",
+        dim="物理知识",
+        dims="H1 提示词服从 · H2 物理知识 · H3 科学逻辑 · H4 主观视觉",
+        desc="HTML 真实物理黑洞模拟：广义相对论光线追踪 + 物理公式 + OrbitControls，考察物理理解与保真度（不评代码）。",
     ),
 ]
 
-DATE = "2026-08-12"
+DATE = "2026-08-13"
 
 
 def esc(s: str) -> str:
@@ -171,7 +187,7 @@ def index_body() -> str:
         f'<div class="row"><span class="k">{k}</span><span class="v">{v}</span></div>'
         for k, v in (
             ("// PROJECT", "AI 能力专项测试"),
-            ("// SUITE", "TC-01 ~ TC-06 · 6 CASES"),
+            ("// SUITE", "TC-01 ~ TC-08 · 8 CASES"),
             ("// DATE", DATE),
         )
     )
@@ -207,7 +223,7 @@ def index_body() -> str:
   <div class="hero">
     <span class="line rv">PROMPT</span>
     <span class="line rv">LIBRARY<span class="b">.</span></span>
-    <span class="sub rv d1">AI 能力专项测试 · 完整提示词六则</span>
+    <span class="sub rv d1">AI 能力专项测试 · 完整提示词八则</span>
   </div>
 
   <section class="cards">
@@ -226,7 +242,7 @@ def index_body() -> str:
   </div>
 </div>
 
-<div class="foot">PROMPT.LIB // 6 CASES · {DATE}</div>
+<div class="foot">PROMPT.LIB // 8 CASES · {DATE}</div>
 
 <span class="cross c-tl"></span>
 <span class="cross c-br"></span>
