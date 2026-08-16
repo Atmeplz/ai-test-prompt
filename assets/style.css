@@ -432,3 +432,115 @@ body {
   .tline { font-size: 13px; }
   .term-body { padding-right: 20px; }
 }
+
+/* ============================================================
+   评分榜（board-XX.html）与首页评分榜入口
+   ============================================================ */
+
+/* —— 首页分区标题 —— */
+.sec { margin-bottom: 72px; }
+.sec-title {
+  margin: 0 0 24px;
+  font-family: var(--mono);
+  font-size: 13px; font-weight: 700;
+  letter-spacing: .24em;
+  color: var(--blue);
+}
+.sec-title::before { content: "// "; color: var(--muted); font-weight: 400; }
+.sec .cards { grid-template-columns: repeat(2, 1fr); }
+
+/* —— 榜单正文 —— */
+.board h2 {
+  display: flex; align-items: center; gap: 12px;
+  margin: 64px 0 20px;
+  font-family: var(--mono);
+  font-size: 15px; font-weight: 700;
+  letter-spacing: .14em;
+}
+.board h2:first-of-type { margin-top: 12px; }
+.board h2::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 10px; height: 10px;
+  background: var(--blue);
+}
+.board h3 {
+  margin: 44px 0 14px;
+  font-size: 26px; font-weight: 900; font-style: italic;
+  letter-spacing: .01em;
+}
+.board p {
+  margin: 14px 0;
+  font-family: var(--mono);
+  font-size: 13.5px; line-height: 1.95;
+  color: rgba(13, 13, 13, .78);
+}
+.board p > strong { color: var(--blue); }
+.board ul, .board ol {
+  margin: 14px 0;
+  padding-left: 22px;
+  font-family: var(--mono);
+  font-size: 13.5px; line-height: 1.95;
+  color: rgba(13, 13, 13, .78);
+}
+.board li { margin: 4px 0; }
+.board li::marker { color: var(--blue); font-weight: 700; }
+.board em { color: var(--muted); }
+.board code, .note code {
+  padding: 1px 7px;
+  background: rgba(13, 13, 13, .07);
+  border: 1px solid rgba(13, 13, 13, .12);
+  font-family: var(--mono);
+  font-size: 12.5px;
+}
+
+/* —— 引用说明块（规则 / 备注） —— */
+.note {
+  margin: 18px 0;
+  padding: 16px 20px;
+  border-left: 3px solid var(--blue);
+  background: rgba(16, 163, 127, .06);
+  font-family: var(--mono);
+  font-size: 13px; line-height: 1.9;
+  color: rgba(13, 13, 13, .72);
+}
+.note strong { color: var(--ink); }
+
+/* —— 数据表格 —— */
+.btable {
+  margin: 22px 0;
+  overflow-x: auto;
+  border: 1px solid rgba(13, 13, 13, .14);
+}
+.btable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.btable th {
+  background: var(--blue);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-align: left;
+  padding: 11px 16px;
+  white-space: nowrap;
+}
+.btable td {
+  padding: 10px 16px;
+  border-top: 1px solid rgba(13, 13, 13, .09);
+  line-height: 1.75;
+  vertical-align: top;
+  color: rgba(13, 13, 13, .85);
+}
+.btable th:first-child, .btable td:first-child { text-align: center; }
+.btable tbody tr:nth-child(even) td { background: rgba(13, 13, 13, .028); }
+.btable tbody tr:hover td { background: rgba(16, 163, 127, .07); }
+.btable tr.tp1 td { background: rgba(16, 163, 127, .10); }
+.btable strong { color: var(--blue); font-weight: 700; }
+
+@media (max-width: 560px) {
+  .sec .cards { grid-template-columns: 1fr; }
+  .board h2 { letter-spacing: .08em; flex-wrap: wrap; }
+}

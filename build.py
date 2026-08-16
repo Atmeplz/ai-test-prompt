@@ -2,16 +2,19 @@
 # -*- coding: utf-8 -*-
 """生成 pages/ 静态站点（与视频模板同风格：瑞士风格 × 蓝图信息密度）。
 
-从 ../prompts/提示词/TC-XX.md 读取完整提示词 → 生成 index.html + tc-XX.html。
-提示词有更新时重跑本脚本即可：python build.py
+从 ../prompts/提示词/TC-XX.md 读取完整提示词 → 生成 index.html + tc-XX.html；
+从 ../评分数据/0X-*.md 读取四张评分榜       → 生成 board-01~04.html。
+提示词/评分有更新时重跑本脚本即可：python build.py
 """
 
 import html
+import json
 import pathlib
 import re
 
 ROOT = pathlib.Path(__file__).resolve().parent
 PROMPTS_DIR = ROOT.parent / "prompts" / "提示词"
+SCORES_DIR = ROOT.parent / "评分数据"
 
 # —— 用例元数据（与 测试项目.md 保持一致） ——
 CASES = [
@@ -83,10 +86,33 @@ CASES = [
 
 DATE = "2026-08-13"
 
+# —— 评分榜元数据（编号/巨字/标签由 build.py 定，标题与正文从 评分数据/*.md 解析） ——
+BOARD_FILES = ["01-总分榜.md", "02-用例榜.md", "03-单项榜.md", "04-六维数据.md"]
+BOARD_EN = {
+    "01": ("TOTAL", "SCORE"),
+    "02": ("CASE", "RANKING"),
+    "03": ("ITEM", "RANKING"),
+    "04": ("SIX-DIM", "DATA"),
+}
+BOARD_TAG = {
+    "01": "TOTAL SCORE",
+    "02": "PER CASE",
+    "03": "PER ITEM",
+    "04": "SIX DIMENSIONS",
+}
+BOARD_DESC = {
+    "01": "模型 × 配置合计分排名：百分位 + 百分制 + 逐用例得分，含配置维度对比与迁移期参考排名。",
+    "02": "TC-01~08 每用例一张排名表：考察点明细、渠道平均与逐行备注（评分人记录）。",
+    "03": "考察点级排行：每个考察点 1st~5th 最高分与百分位（含并列与全量名单）。",
+    "04": "六维雷达数据：① 前端开发 ② 后端代码 ③ 逻辑理解 ④ 科学研究 ⑤ 文学创作 ⑥ 审美视觉，区间数据表 + 百分位换算。",
+}
+
 
 def esc(s: str) -> str:
     return html.escape(s, quote=False)
 
+
+# ---------- 提示词页 ----------
 
 def render_prompt_lines(text: str) -> str:
     """终端窗口内逐行渲染：行号 + md 标题/分隔线高亮（与模板 prompt.html 同规则）。"""
@@ -182,12 +208,194 @@ def case_body(c: dict) -> str:
 """
 
 
+# ---------- 评分榜页 ----------
+
+def inline_md(s: str) -> str:
+    """行内 md：`code` → **bold** → *em*（先转义再替换，code 优先防误伤）。"""
+    s = esc(s)
+    s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+    s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
+    s = re.sub(r"(?<!\*)\*([^*\n]+)\*(?!\*)", r"<em>\1</em>", s)
+    return s
+
+
+def is_table_sep(row: str) -> bool:
+    cells = [c.strip() for c in row.strip().strip("|").split("|")]
+    return bool(cells) and all(re.fullmatch(r":?-{3,}:?", c) for c in cells)
+
+
+def render_table(lines, i):
+    """从 lines[i] 起收集连续表格行 → (HTML, 下一行下标)。"""
+    rows = []
+    while i < len(lines) and lines[i].strip().startswith("|"):
+        rows.append(lines[i].strip())
+        i += 1
+
+    def cells(r):
+        return [c.strip() for c in r.strip().strip("|").split("|")]
+
+    header = cells(rows[0])
+    body_start = 2 if len(rows) > 1 and is_table_sep(rows[1]) else 1
+    thead = "<tr>" + "".join(f"<th>{inline_md(h)}</th>" for h in header) + "</tr>"
+    trs = []
+    for r in rows[body_start:]:
+        cs = cells(r)
+        cls = ' class="tp1"' if cs and cs[0].replace("*", "").strip() == "1" else ""
+        trs.append(f"<tr{cls}>" + "".join(f"<td>{inline_md(c)}</td>" for c in cs) + "</tr>")
+    return (f'<div class="btable"><table><thead>{thead}</thead><tbody>'
+            + "".join(trs) + "</tbody></table></div>"), i
+
+
+def render_md_body(text: str) -> str:
+    """评分榜 md → 站内板式 HTML（h2/h3、引用说明块、表格、列表、段落）。"""
+    lines = text.replace("\r\n", "\n").split("\n")
+    out = []
+    i, n = 0, len(lines)
+    while i < n:
+        s = lines[i].strip()
+        if not s:
+            i += 1
+            continue
+        if s.startswith("|"):
+            block, i = render_table(lines, i)
+            out.append(block)
+            continue
+        if s.startswith(">"):
+            block = []
+            while i < n and lines[i].startswith(">"):
+                block.append(inline_md(lines[i][1:].strip()))
+                i += 1
+            out.append(f'<div class="note">{"<br>".join(block)}</div>')
+            continue
+        if s.startswith("### "):
+            out.append(f"<h3>{inline_md(s[4:])}</h3>")
+            i += 1
+            continue
+        if s.startswith("## "):
+            out.append(f"<h2>{inline_md(s[3:])}</h2>")
+            i += 1
+            continue
+        if s.startswith("- "):
+            items = []
+            while i < n and lines[i].strip().startswith("- "):
+                items.append(f"<li>{inline_md(lines[i].strip()[2:])}</li>")
+                i += 1
+            out.append("<ul>" + "".join(items) + "</ul>")
+            continue
+        if re.match(r"^\d+\.\s", s):
+            items = []
+            while i < n and re.match(r"^\d+\.\s", lines[i].strip()):
+                txt = re.sub(r"^\d+\.\s", "", lines[i].strip())
+                items.append(f"<li>{inline_md(txt)}</li>")
+                i += 1
+            out.append("<ol>" + "".join(items) + "</ol>")
+            continue
+        out.append(f"<p>{inline_md(s)}</p>")
+        i += 1
+    return "\n".join(out)
+
+
+def parse_board(fname: str):
+    """读取一张榜 md → (编号, 中文标题, 正文 HTML)。"""
+    text = (SCORES_DIR / fname).read_text(encoding="utf-8")
+    first, rest = text.split("\n", 1)
+    m = re.match(r"^#\s*(\d+)\s*—\s*(.+)$", first.strip())
+    no = m.group(1) if m else fname[:2]
+    title = m.group(2).strip() if m else fname
+    return no, title, render_md_body(rest)
+
+
+def board_stats():
+    """从 board-data.json 取模型数/最新评分日期（由 评分数据/build.py 生成）。"""
+    try:
+        data = json.loads((SCORES_DIR / "out" / "board-data.json").read_text(encoding="utf-8"))
+        dates = [r.get("tested") for r in data.get("rows", []) if r.get("tested")]
+        return data.get("N_total", "—"), data.get("N_complete", "—"), max(dates) if dates else "—"
+    except OSError:
+        return "—", "—", "—"
+
+
+def board_nav(on_no: str) -> str:
+    return "".join(
+        f'<a class="n{" on" if no == on_no else ""}" href="board-{no}.html">{no} {BOARD_EN[no][0]}</a>'
+        for no in BOARD_EN
+    )
+
+
+def board_body(fname: str, stats) -> str:
+    no, title, body = parse_board(fname)
+    en1, en2 = BOARD_EN[no]
+    tag = BOARD_TAG[no]
+    n_total, n_complete, latest = stats
+    meta = "".join(
+        f'<div class="row"><span class="k">{k}</span><span class="v">{v}</span></div>'
+        for k, v in (
+            ("// PROJECT", "AI 能力专项测试"),
+            ("// BOARD", f"{no} · {title}"),
+            ("// SOURCE", f"评分数据/{fname} ← scores.yaml"),
+            ("// DATA", f"{n_total} RUNS · {n_complete} COMPLETE · UPDATED {latest}"),
+        )
+    )
+    return f"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{no} · {esc(title)} — 评分榜 · AI 能力专项测试</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="page-board">
+
+<div class="vlines"><i></i><i></i><i></i><i></i><i></i></div>
+
+<header class="nav">
+  <a class="brand" href="index.html">← PROMPT.LIB + SCORE.BOARDS</a>
+  <nav class="tc-nav">{board_nav(no)}</nav>
+</header>
+
+<main class="wrap">
+  <div class="meta">
+    {meta}
+  </div>
+
+  <div class="hero">
+    <span class="line rv">{en1}</span>
+    <span class="line rv">{en2}<span class="b">.</span></span>
+    <span class="sub rv d1">{esc(title)}</span>
+    <span class="tag rv d2">{tag}</span>
+  </div>
+
+  <div class="board">
+{body}
+  </div>
+</main>
+
+<div class="band">
+  <div class="band-in">
+    <span class="band-title">{no} · {esc(title)}</span>
+    <span class="band-tag">{tag}</span>
+  </div>
+</div>
+
+<div class="foot">SCORE.BOARD // {no} · {en1} {en2}.</div>
+
+<span class="cross c-tl"></span>
+<span class="cross c-br"></span>
+
+</body>
+</html>
+"""
+
+
+# ---------- 首页 ----------
+
 def index_body() -> str:
     meta = "".join(
         f'<div class="row"><span class="k">{k}</span><span class="v">{v}</span></div>'
         for k, v in (
             ("// PROJECT", "AI 能力专项测试"),
             ("// SUITE", "TC-01 ~ TC-08 · 8 CASES"),
+            ("// BOARDS", "4 SCORE BOARDS · 总分 / 用例 / 单项 / 六维"),
             ("// DATE", DATE),
         )
     )
@@ -201,12 +409,24 @@ def index_body() -> str:
       <p>{esc(c['desc'])}</p>
       <div class="card-foot"><span>{esc(c['dim'])}</span><span class="go">→</span></div>
     </a>"""
+    board_cards = ""
+    for fname in BOARD_FILES:
+        no, title, _ = parse_board(fname)
+        en1, en2 = BOARD_EN[no]
+        board_cards += f"""
+    <a class="card" href="board-{no}.html">
+      <div class="card-no">{no}</div>
+      <div class="card-en">BOARD · {en1} {en2}.</div>
+      <h3>{esc(title)}</h3>
+      <p>{esc(BOARD_DESC[no])}</p>
+      <div class="card-foot"><span>{BOARD_TAG[no]}</span><span class="go">→</span></div>
+    </a>"""
     return f"""<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>提示词全库 · AI 能力专项测试</title>
+<title>提示词全库 + 评分榜 · AI 能力专项测试</title>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -223,11 +443,18 @@ def index_body() -> str:
   <div class="hero">
     <span class="line rv">PROMPT</span>
     <span class="line rv">LIBRARY<span class="b">.</span></span>
-    <span class="sub rv d1">AI 能力专项测试 · 完整提示词八则</span>
+    <span class="sub rv d1">AI 能力专项测试 · 提示词八则 + 评分四榜</span>
   </div>
 
   <section class="cards">
 {cards}
+  </section>
+
+  <section class="sec">
+    <div class="sec-title">SCORE BOARDS</div>
+    <div class="cards">
+{board_cards}
+    </div>
   </section>
 </main>
 
@@ -242,7 +469,7 @@ def index_body() -> str:
   </div>
 </div>
 
-<div class="foot">PROMPT.LIB // 8 CASES · {DATE}</div>
+<div class="foot">PROMPT.LIB + SCORE.BOARDS // 8 CASES + 4 BOARDS</div>
 
 <span class="cross c-tl"></span>
 <span class="cross c-br"></span>
@@ -253,10 +480,14 @@ def index_body() -> str:
 
 
 def main() -> None:
+    stats = board_stats()
     (ROOT / "index.html").write_text(index_body(), encoding="utf-8")
     for c in CASES:
         (ROOT / f"{c['id'].lower()}.html").write_text(case_body(c), encoding="utf-8")
-    print("generated:", [p.name for p in ROOT.glob("*.html")])
+    for fname in BOARD_FILES:
+        no, _, _ = parse_board(fname)
+        (ROOT / f"board-{no}.html").write_text(board_body(fname, stats), encoding="utf-8")
+    print("generated:", sorted(p.name for p in ROOT.glob("*.html")))
 
 
 if __name__ == "__main__":
