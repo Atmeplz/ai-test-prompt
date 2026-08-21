@@ -4,35 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TC-07 · 库存服务 · 规格陷阱题 — 提示词全库</title>
+<meta name="description" content="TC-07 库存服务 · 规格陷阱题 完整提示词 · AI 能力专项测试">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%235b8cff'/%3E%3Cstop offset='1' stop-color='%232fd4b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Crect x='9' y='9' width='14' height='14' rx='4' fill='white'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/style.css">
 </head>
-<body class="page-detail">
-
-<div class="vlines"><i></i><i></i><i></i><i></i><i></i></div>
-
-<header class="nav">
-  <a class="brand" href="index.html">← PROMPT.LIB</a>
-  <nav class="tc-nav"><a class="n" href="tc-01.html">01</a><a class="n" href="tc-02.html">02</a><a class="n" href="tc-03.html">03</a><a class="n" href="tc-04.html">04</a><a class="n" href="tc-05.html">05</a><a class="n" href="tc-06.html">06</a><a class="n on" href="tc-07.html">07</a><a class="n" href="tc-08.html">08</a></nav>
+<body class="page-case">
+<div class="aurora"><i></i><i></i><i></i><i></i></div>
+<div class="gridlines"></div>
+<header class="topnav">
+  <a class="brand" href="index.html"><span class="logo"></span><span class="bt">AI 能力专项测试</span></a>
+  <nav><a href="index.html">首页</a><a href="board-01.html">总分榜</a><a href="board-02.html">用例榜</a><a href="board-03.html">单项榜</a><a href="board-04.html">六维</a></nav>
 </header>
 
 <main class="wrap">
-  <div class="meta">
-    <div class="row"><span class="k">// PROMPT</span><span class="v">TC-07 · v1 · FULL TEXT</span></div><div class="row"><span class="k">// SOURCE</span><span class="v">prompts/提示词/TC-07.md</span></div><div class="row"><span class="k">// CHARS</span><span class="v">1356 CHARS</span></div>
-  </div>
-
-  <div class="hero">
-    <span class="line rv">TC-07<span class="b">.</span></span>
-    <span class="sub rv d1">库存服务 · 规格陷阱题</span>
-    <span class="tag rv d2">后端能力</span>
+  <div class="pagehead">
+    <div class="crumb">PROMPT LIBRARY / TC-07 · FULL TEXT · 1356 CHARS</div>
+    <h1>库存服务 · 规格陷阱题<span class="en">INVENTORY SERVICE · TRAP SPEC</span></h1>
+    <p class="lede">内存版库存服务接入外部合作方：幂等 + 并发 + 回滚 + 自证，标准 vs 实践冲突 + 蜜罐陷阱逐项拦截。</p>
+    <div class="meta-chips">
+      <span class="mc">TC-07</span>
+      <span class="mc">考察维度 · <b>后端能力</b></span>
+      <span class="mc">来源 · prompts/提示词/TC-07.md</span>
+    </div>
   </div>
 
   <div class="term">
-    <div class="term-bar">
-      <span>// PROMPT — TC-07 v1 · 1356 CHARS</span>
-      <span class="dots">●●●</span>
-    </div>
+    <div class="term-bar"><span>// PROMPT — TC-07 · 1356 CHARS</span><span class="dots">●●●</span></div>
     <div class="term-body">
-      <div class="tline"><span class="ln">001</span><span class="tx">【题目：库存服务接入外部合作方】</span></div>
+<div class="tline"><span class="ln">001</span><span class="tx">【题目：库存服务接入外部合作方】</span></div>
 <div class="tline"><span class="ln">002</span><span class="tx"> </span></div>
 <div class="tline"><span class="ln">003</span><span class="tx">场景：你是后端工程师，实现内存版库存服务，并接入一个外部合作方系统。</span></div>
 <div class="tline"><span class="ln">004</span><span class="tx">合作方的行为受以下硬性规则约束，你的实现必须与其兼容：</span></div>
@@ -85,22 +84,17 @@
     <div class="term-end">// END OF PROMPT</div>
   </div>
 
-  <div class="dims">
-    <span class="k">考察维度</span><span class="v">G1 状态码 · G2 无锁原子 · G3 重试一致 · G4 审计脱敏 · G5 幂等 · G6 回滚合并 · G7 自证 + 冲突处理</span>
+  <div class="dims"><span class="dk">G1 状态码</span><span class="dk">G2 无锁原子</span><span class="dk">G3 重试一致</span><span class="dk">G4 审计脱敏</span><span class="dk">G5 幂等</span><span class="dk">G6 回滚合并</span><span class="dk">G7 自证 + 冲突处理</span></div>
+
+  <div class="caseswitch">
+    <a class="btn btn-g" href="tc-06.html">← TC-06 论文解读 · 小众论文问答</a>
+    <a class="btn btn-g" href="tc-08.html">TC-08 黑洞模拟 · 广义相对论 →</a>
   </div>
 </main>
 
-<div class="band">
-  <div class="band-in">
-    <span class="band-title">TC-07 · 库存服务 · 规格陷阱题</span>
-    <span class="band-tag">后端能力</span>
-  </div>
-</div>
-
-<div class="foot">PROMPT.FULL // TC-07</div>
-
-<span class="cross c-tl"></span>
-<span class="cross c-br"></span>
-
+<footer class="foot"><div class="wrap">
+  <span class="fm">PROMPT.LIB × SCORE.BOARDS — 8 CASES / 4 BOARDS</span>
+  <span class="fn">数据更新 <b>2026-08-21</b> · 32 runs · 15 完整测评 · 由 scores.yaml 自动生成</span>
+</div></footer>
 </body>
 </html>

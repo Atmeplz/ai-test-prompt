@@ -3,137 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>提示词全库 + 评分榜 · AI 能力专项测试</title>
+<title>提示词全库 × 评分榜 · AI 能力专项测试</title>
+<meta name="description" content="8 道全栈用例 × 4 张评分榜：同一套检查点体系下的 AI 模型横向实测。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%235b8cff'/%3E%3Cstop offset='1' stop-color='%232fd4b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Crect x='9' y='9' width='14' height='14' rx='4' fill='white'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/style.css">
 </head>
-<body>
+<body class="page-home">
+<div class="aurora"><i></i><i></i><i></i><i></i></div>
+<div class="gridlines"></div>
+<header class="topnav">
+  <a class="brand" href="index.html"><span class="logo"></span><span class="bt">AI 能力专项测试</span></a>
+  <nav><a href="index.html" class="on">首页</a><a href="board-01.html">总分榜</a><a href="board-02.html">用例榜</a><a href="board-03.html">单项榜</a><a href="board-04.html">六维</a></nav>
+</header>
 
-<div class="vlines"><i></i><i></i><i></i><i></i><i></i></div>
+<section class="hero">
+  <canvas id="hero3d" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <div class="chip rv"><span class="dot"></span>AI 能力专项测试 · CHECKPOINT SUITE 2026</div>
+    <h1 class="rv d1">
+      <span class="en">PROMPT LIBRARY × SCORE BOARDS</span>
+      <span class="gt">提示词全库</span><br>× 评分榜
+    </h1>
+    <p class="lede rv d2">8 道全栈用例 × 4 张评分榜——3D 体素古建、山水瀑布、前端落地页、童话改编、公文提炼、论文问答、后端陷阱规格、黑洞模拟，同一套检查点体系下的横向实测。</p>
+    <div class="cta rv d3">
+      <a class="btn btn-p" href="board-01.html">直达总分榜 <span class="ar">→</span></a>
+      <a class="btn btn-g" href="#cases">浏览八个用例</a>
+    </div>
+    <div class="stats rv d4">
+      <div class="stat"><b data-stat="runs">32</b><span>RUNS 评测次数</span></div>
+      <div class="stat"><b data-stat="complete">15</b><span>完整八用例</span></div>
+      <div class="stat"><b data-stat="cases">8</b><span>测试用例</span></div>
+      <div class="stat"><b data-stat="updated" style="font-size:15px;line-height:31px">2026-08-21</b><span>最近更新</span></div>
+    </div>
+  </div>
+  <div class="scroll-hint">SCROLL</div>
+</section>
 
 <main class="wrap">
-  <div class="meta">
-    <div class="row"><span class="k">// PROJECT</span><span class="v">AI 能力专项测试</span></div><div class="row"><span class="k">// SUITE</span><span class="v">TC-01 ~ TC-08 · 8 CASES</span></div><div class="row"><span class="k">// BOARDS</span><span class="v">4 SCORE BOARDS · 总分 / 用例 / 单项 / 六维</span></div><div class="row"><span class="k">// DATE</span><span class="v">2026-08-13</span></div>
-  </div>
+  <section class="sec">
+    <div class="sec-head">
+      <h2><span class="en">LEADERBOARD PREVIEW</span>总榜速览 · TOP 5</h2>
+      <a class="more" href="board-01.html">完整总分榜 →</a>
+    </div>
+    <div id="top-preview"></div>
+  </section>
 
-  <div class="vf"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><div class="lock">TEST SUITE LOCKED</div></div>
-
-  <div class="hero">
-    <span class="line rv">PROMPT</span>
-    <span class="line rv">LIBRARY<span class="b">.</span></span>
-    <span class="sub rv d1">AI 能力专项测试 · 提示词八则 + 评分四榜</span>
-  </div>
-
-  <section class="cards">
-
-    <a class="card" href="tc-01.html">
-      <div class="card-no">01</div>
-      <div class="card-en">VOXEL CLASSIC ARCHITECTURE</div>
-      <h3>3D 体素中国古典建筑群</h3>
-      <p>Three.js 生成 Minecraft 风格中式古建群：主殿/配殿/山门/宝塔，中轴对称院落 + 飞檐翘角 + 光影氛围。</p>
-      <div class="card-foot"><span>空间建模</span><span class="go">→</span></div>
-    </a>
-    <a class="card" href="tc-02.html">
-      <div class="card-no">02</div>
-      <div class="card-en">VOXEL LANDSCAPE · FALL &amp; CLOUD</div>
-      <h3>3D 体素自然景观 · 山瀑布穿云</h3>
-      <p>体素山脉 + 瀑布倾泻 + 穿云遮挡关系，考察模型对自然地貌与水体物理的世界知识。</p>
-      <div class="card-foot"><span>世界理解与知识储备（Addon）</span><span class="go">→</span></div>
-    </a>
-    <a class="card" href="tc-03.html">
-      <div class="card-no">03</div>
-      <div class="card-en">LANDING PAGE · OUTDOOR GEAR</div>
-      <h3>前端落地页 · 户外机能风</h3>
-      <p>不给风格约束的商业落地页：由模型自主设计一套自洽、有辨识度的视觉方案。</p>
-      <div class="card-foot"><span>视觉与交互设计</span><span class="go">→</span></div>
-    </a>
-    <a class="card" href="tc-04.html">
-      <div class="card-no">04</div>
-      <div class="card-en">FAIRY TALE REWRITE · LITTLE RED RIDING HOOD</div>
-      <h3>童话改编创作 · 小红帽反套路</h3>
-      <p>以《小红帽》人设为基础创作全新故事：情节必须与原作截然不同，考察过拟合/创意/文本能力（500~2000 字）。</p>
-      <div class="card-foot"><span>文本创作</span><span class="go">→</span></div>
-    </a>
-    <a class="card" href="tc-05.html">
-      <div class="card-no">05</div>
-      <div class="card-en">OFFICIAL DOCUMENT MINING</div>
-      <h3>公文理解提炼</h3>
-      <p>从会议纪要中提炼议定事项要点：限 7 条、限 500 字、按时间节点排序、零幻觉。</p>
-      <div class="card-foot"><span>结构化理解</span><span class="go">→</span></div>
-    </a>
-    <a class="card" href="tc-06.html">
-      <div class="card-no">06</div>
-      <div class="card-en">PAPER READING · Q&amp;A</div>
-      <h3>论文解读 · 小众论文问答</h3>
-      <p>阅读随附的小众科学论文（PDF），解答 3 个问题（每答 ≤1000 字）——考察 PDF 解析、要点提取与幻觉抑制。</p>
-      <div class="card-foot"><span>文本理解与信息提取</span><span class="go">→</span></div>
-    </a>
-    <a class="card" href="tc-07.html">
-      <div class="card-no">07</div>
-      <div class="card-en">INVENTORY SERVICE · TRAP SPEC</div>
-      <h3>库存服务 · 规格陷阱题</h3>
-      <p>内存版库存服务接入外部合作方：幂等 + 并发 + 回滚 + 自证，标准 vs 实践冲突 + 蜜罐陷阱逐项拦截。</p>
-      <div class="card-foot"><span>后端能力</span><span class="go">→</span></div>
-    </a>
-    <a class="card" href="tc-08.html">
-      <div class="card-no">08</div>
-      <div class="card-en">BLACK HOLE · GENERAL RELATIVITY</div>
-      <h3>黑洞模拟 · 广义相对论</h3>
-      <p>HTML 真实物理黑洞模拟：广义相对论光线追踪 + 物理公式 + OrbitControls，考察物理理解与保真度（不评代码）。</p>
-      <div class="card-foot"><span>物理知识</span><span class="go">→</span></div>
-    </a>
+  <section class="sec" id="cases">
+    <div class="sec-head">
+      <h2><span class="en">TEST CASES · TC-01~08</span>八个测试用例</h2>
+    </div>
+    <div class="cards">
+      <a class="card" href="tc-01.html">
+        <div class="no">01</div>
+        <div class="en">VOXEL CLASSIC ARCHITECTURE</div>
+        <h3>3D 体素中国古典建筑群</h3>
+        <p>Three.js 生成 Minecraft 风格中式古建群：主殿/配殿/山门/宝塔，中轴对称院落 + 飞檐翘角 + 光影氛围。</p>
+        <div class="foot"><span>空间建模</span><span class="go">→</span></div>
+      </a>
+      <a class="card" href="tc-02.html">
+        <div class="no">02</div>
+        <div class="en">VOXEL LANDSCAPE · FALL &amp; CLOUD</div>
+        <h3>3D 体素自然景观 · 山瀑布穿云</h3>
+        <p>体素山脉 + 瀑布倾泻 + 穿云遮挡关系，考察模型对自然地貌与水体物理的世界知识。</p>
+        <div class="foot"><span>世界理解与知识储备（Addon）</span><span class="go">→</span></div>
+      </a>
+      <a class="card" href="tc-03.html">
+        <div class="no">03</div>
+        <div class="en">LANDING PAGE · OUTDOOR GEAR</div>
+        <h3>前端落地页 · 户外机能风</h3>
+        <p>不给风格约束的商业落地页：由模型自主设计一套自洽、有辨识度的视觉方案。</p>
+        <div class="foot"><span>视觉与交互设计</span><span class="go">→</span></div>
+      </a>
+      <a class="card" href="tc-04.html">
+        <div class="no">04</div>
+        <div class="en">FAIRY TALE REWRITE · LITTLE RED RIDING HOOD</div>
+        <h3>童话改编创作 · 小红帽反套路</h3>
+        <p>以《小红帽》人设为基础创作全新故事：情节必须与原作截然不同，考察过拟合/创意/文本能力（500~2000 字）。</p>
+        <div class="foot"><span>文本创作</span><span class="go">→</span></div>
+      </a>
+      <a class="card" href="tc-05.html">
+        <div class="no">05</div>
+        <div class="en">OFFICIAL DOCUMENT MINING</div>
+        <h3>公文理解提炼</h3>
+        <p>从会议纪要中提炼议定事项要点：限 7 条、限 500 字、按时间节点排序、零幻觉。</p>
+        <div class="foot"><span>结构化理解</span><span class="go">→</span></div>
+      </a>
+      <a class="card" href="tc-06.html">
+        <div class="no">06</div>
+        <div class="en">PAPER READING · Q&amp;A</div>
+        <h3>论文解读 · 小众论文问答</h3>
+        <p>阅读随附的小众科学论文（PDF），解答 3 个问题（每答 ≤1000 字）——考察 PDF 解析、要点提取与幻觉抑制。</p>
+        <div class="foot"><span>文本理解与信息提取</span><span class="go">→</span></div>
+      </a>
+      <a class="card" href="tc-07.html">
+        <div class="no">07</div>
+        <div class="en">INVENTORY SERVICE · TRAP SPEC</div>
+        <h3>库存服务 · 规格陷阱题</h3>
+        <p>内存版库存服务接入外部合作方：幂等 + 并发 + 回滚 + 自证，标准 vs 实践冲突 + 蜜罐陷阱逐项拦截。</p>
+        <div class="foot"><span>后端能力</span><span class="go">→</span></div>
+      </a>
+      <a class="card" href="tc-08.html">
+        <div class="no">08</div>
+        <div class="en">BLACK HOLE · GENERAL RELATIVITY</div>
+        <h3>黑洞模拟 · 广义相对论</h3>
+        <p>HTML 真实物理黑洞模拟：广义相对论光线追踪 + 物理公式 + OrbitControls，考察物理理解与保真度（不评代码）。</p>
+        <div class="foot"><span>物理知识</span><span class="go">→</span></div>
+      </a>
+    </div>
   </section>
 
   <section class="sec">
-    <div class="sec-title">SCORE BOARDS</div>
+    <div class="sec-head">
+      <h2><span class="en">SCORE BOARDS</span>四张评分榜</h2>
+    </div>
     <div class="cards">
+      <a class="card" href="board-01.html">
+        <div class="no">01</div>
+        <div class="en">BOARD · TOTAL SCORE</div>
+        <h3>总分榜</h3>
+        <p>八个用例全部测完的 run 按合计分排名。</p>
+        <div class="foot"><span>TOTAL SCORE</span><span class="go">→</span></div>
+      </a>
+      <a class="card" href="board-02.html">
+        <div class="no">02</div>
+        <div class="en">BOARD · PER CASE</div>
+        <h3>用例榜</h3>
+        <p>TC-01 ~ TC-08 每个用例一张排名表：总分、百分位与各考察点得分。</p>
+        <div class="foot"><span>PER CASE</span><span class="go">→</span></div>
+      </a>
+      <a class="card" href="board-03.html">
+        <div class="no">03</div>
+        <div class="en">BOARD · PER ITEM</div>
+        <h3>单项榜</h3>
+        <p>考察点级前三甲（含并列）。</p>
+        <div class="foot"><span>PER ITEM</span><span class="go">→</span></div>
+      </a>
+      <a class="card" href="board-04.html">
+        <div class="no">04</div>
+        <div class="en">BOARD · SIX DIMENSIONS</div>
+        <h3>六维能力</h3>
+        <p>六维能力雷达：前端开发 / 后端代码 / 逻辑理解 / 科学研究 / 文学创作 / 审美视觉。</p>
+        <div class="foot"><span>SIX DIMENSIONS</span><span class="go">→</span></div>
+      </a>
+    </div>
+  </section>
 
-    <a class="card" href="board-01.html">
-      <div class="card-no">01</div>
-      <div class="card-en">BOARD · TOTAL SCORE.</div>
-      <h3>总分榜（模型 × 配置）</h3>
-      <p>模型 × 配置合计分排名：百分位 + 百分制 + 逐用例得分，含配置维度对比与迁移期参考排名。</p>
-      <div class="card-foot"><span>TOTAL SCORE</span><span class="go">→</span></div>
-    </a>
-    <a class="card" href="board-02.html">
-      <div class="card-no">02</div>
-      <div class="card-en">BOARD · CASE RANKING.</div>
-      <h3>用例榜（分用例排行）</h3>
-      <p>TC-01~08 每用例一张排名表：考察点明细、渠道平均与逐行备注（评分人记录）。</p>
-      <div class="card-foot"><span>PER CASE</span><span class="go">→</span></div>
-    </a>
-    <a class="card" href="board-03.html">
-      <div class="card-no">03</div>
-      <div class="card-en">BOARD · ITEM RANKING.</div>
-      <h3>单项榜（考察点级排行）</h3>
-      <p>考察点级排行：每个考察点 1st~5th 最高分与百分位（含并列与全量名单）。</p>
-      <div class="card-foot"><span>PER ITEM</span><span class="go">→</span></div>
-    </a>
-    <a class="card" href="board-04.html">
-      <div class="card-no">04</div>
-      <div class="card-en">BOARD · SIX-DIM DATA.</div>
-      <h3>六维数据（区间六维图数据）</h3>
-      <p>六维雷达数据：① 前端开发 ② 后端代码 ③ 逻辑理解 ④ 科学研究 ⑤ 文学创作 ⑥ 审美视觉，区间数据表 + 百分位换算。</p>
-      <div class="card-foot"><span>SIX DIMENSIONS</span><span class="go">→</span></div>
-    </a>
+  <section class="sec">
+    <div class="notebox">
+      <b>口径说明</b>：总分榜/用例榜百分位 = 得分 ÷ 该榜榜首得分（榜首恒 100%）；六维雷达默认排名换算百分位（该维第一名恒 100%）。TC-07 总分允许超过 100（基础 100 + 冲突处理 ±15）。
+      本站只公开排名与分数；逐题评分备注、扣分判例与评语录留存在内部评分档案。
     </div>
   </section>
 </main>
 
-<div class="band">
-  <div class="band-in">
-    <span class="band-title">前端 / 后端 / 自然语言 能力测试</span>
-    <div class="cols">
-      <div class="col"><span><b>|</b>Frontend scene &amp; UI.</span><span><b>|</b>Backend trap spec.</span></div>
-      <div class="col"><span><b>|</b>Natural language mastery.</span><span><b>|</b>World knowledge.</span></div>
-      <div class="col"><span><b>|</b>Benchmarking.</span><span><b>|</b>Six-dimension scoring.</span></div>
-    </div>
-  </div>
-</div>
-
-<div class="foot">PROMPT.LIB + SCORE.BOARDS // 8 CASES + 4 BOARDS</div>
-
-<span class="cross c-tl"></span>
-<span class="cross c-br"></span>
-
+<footer class="foot"><div class="wrap">
+  <span class="fm">PROMPT.LIB × SCORE.BOARDS — 8 CASES / 4 BOARDS</span>
+  <span class="fn">数据更新 <b>2026-08-21</b> · 32 runs · 15 完整测评 · 由 scores.yaml 自动生成</span>
+</div></footer>
+<script src="assets/app.js" defer></script>
+<script type="module" src="assets/hero.js"></script>
 </body>
 </html>
