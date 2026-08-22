@@ -124,18 +124,24 @@
     if (multi.length) {
       cmp = `<div class="sec-sub">CONFIG COMPARE · 配置维度对比</div>` + multi.map(([m, rs]) => {
         rs = rs.slice().sort((a, b) => b.total - a.total);
+        /* 标签：组内 effort 互不相同时用 effort（如 max vs high）；
+           effort 相同时差别在渠道——用 platform（含 source）区分（如 qoder vs zcode） */
+        const sameEffort = rs.every((r) => !r.effort || r.effort === rs[0].effort);
+        const label = (r) => sameEffort
+          ? `${r.platform || "?"}${r.source ? `/${r.source}` : ""}`
+          : (r.effort || r.platform || "?");
         const head = `<tr><th>配置</th>${TCS.map((t) => `<th>${t.toUpperCase()}</th>`).join("")}<th>合计</th></tr>`;
         const body = rs.map((r) => `<tr>
-          <td class="nm">${vendorDot(data, r.vendor)}${esc(r.effort || r.platform || "?")}</td>
+          <td class="nm">${vendorDot(data, r.vendor)}${esc(label(r))}</td>
           ${TCS.map((tc) => `<td class="num">${fmt(r.cases[tc] && r.cases[tc].total)}</td>`).join("")}
           <td class="num strong">${fmt(r.total)}</td></tr>`).join("");
         const win = `<tr><td style="color:var(--ink-3);font-weight:700">胜方</td>
           ${TCS.map((tc) => {
             const a = rs[0].cases[tc] && rs[0].cases[tc].total, b = rs[1] && rs[1].cases[tc] && rs[1].cases[tc].total;
-            const w = a === b ? "平" : a > b ? rs[0].effort || rs[0].platform : (rs[1].effort || rs[1].platform);
+            const w = a === b ? "平" : a > b ? label(rs[0]) : label(rs[1]);
             return `<td class="pct">${esc(w)}</td>`;
           }).join("")}<td></td></tr>`;
-        return `<h3 style="margin:0 0 12px;font-size:15px">${esc(m)} <span style="color:var(--ink-3);font-weight:500;font-size:12px">${esc(rs[0].effort || rs[0].platform)} vs ${esc(rs[1].effort || rs[1].platform)}</span></h3>
+        return `<h3 style="margin:0 0 12px;font-size:15px">${esc(m)} <span style="color:var(--ink-3);font-weight:500;font-size:12px">${esc(label(rs[0]))} vs ${esc(label(rs[1]))}</span></h3>
         <div class="btable"><div class="scroll"><table><thead>${head}</thead><tbody>${body}${win}</tbody></table></div></div>`;
       }).join("");
     }
@@ -291,8 +297,19 @@
           if (v !== undefined && v !== null) pairs.push({ board: r.board, vendor: r.vendor, v });
         }
         if (!pairs.length) continue;
+        /* 不足三档加注：全场并列满分 / 并列后仅两档（2026-08-22 用户裁决） */
+        const vs = pairs.map((p) => p.v).sort((a, b) => b - a);
+        const tiers = [];
+        for (const v of vs) {
+          if (tiers.length && Math.abs(tiers[tiers.length - 1] - v) < 1e-9) continue;
+          tiers.push(v);
+        }
+        let note = "";
+        if (tiers.length === 1 && it.max !== "±" && Math.abs(tiers[0] - it.max) < 1e-9) note = " · 全场并列满分";
+        else if (tiers.length === 1) note = " · 全场同分";
+        else if (tiers.length < 3) note = ` · 并列后仅 ${tiers.length} 档`;
         cards.push(`<div class="itemcard">
-          <div class="ih"><b>${esc(it.label)}</b><span>满分 ${it.max} · ${pairs.length} 参评</span></div>
+          <div class="ih"><b>${esc(it.label)}</b><span>满分 ${it.max} · ${pairs.length} 参评${note}</span></div>
           ${podiumRows(pairs, tc !== "tc-07")}
         </div>`);
       }
