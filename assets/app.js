@@ -9,17 +9,33 @@
   const fmt = (value, digits = 2) => Number(value).toFixed(digits).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
   const pct = (value) => `${Number(value).toFixed(1)}%`;
 
-  fetch("data/site.json?v=20260830-6")
+  setupAnnouncement();
+
+  fetch("data/site.json?v=20260831-4")
     .then((response) => response.json())
     .then((data) => boot(data));
+
+  function setupAnnouncement() {
+    const notice = $(".site-notice");
+    const cookie = `ai_test_notice=${notice.dataset.notice}`;
+
+    if (document.cookie.split("; ").includes(cookie)) {
+      notice.remove();
+      return;
+    }
+
+    $(".notice-close", notice).addEventListener("click", () => {
+      document.cookie = `${cookie}; Max-Age=31536000; Path=/; SameSite=Lax`;
+      notice.classList.add("is-leaving");
+      notice.addEventListener("animationend", () => notice.remove(), { once: true });
+    });
+  }
 
   function boot(data) {
     const rows = data.rows.filter((row) => row.complete).sort((a, b) => a.rank - b.rank);
 
     if ($("#top-preview")) renderTopPreview(data, rows);
     if ($("#direction-preview")) renderDirectionPreview(data, rows);
-    if ($("[data-task]")) renderTaskRanking(data, rows, $("[data-task]"));
-
     const board = $("[data-site]");
     if (board) {
       const renderers = {
@@ -79,30 +95,6 @@
         <span class="direction-arrow">↗</span>
       </a>`;
     }).join("");
-  }
-
-  function renderTaskRanking(data, rows, target) {
-    const key = target.dataset.task;
-    const task = data.tasks[key];
-    const itemNames = data.cases[key].items;
-    const ranking = rows.filter((row) => row.cases[key]).sort((a, b) => a.cases[key].rank - b.cases[key].rank);
-
-    target.innerHTML = `<div class="result-window">
-      <div class="result-head"><span>RANK / MODEL</span><span>NORMALIZED</span><span>RAW</span><span>CHECKPOINTS</span></div>
-      ${ranking.map((row) => {
-        const result = row.cases[key];
-        const items = Object.entries(result.items).map(([code, value]) =>
-          `<span><b>${esc(code)}</b>${fmt(value, 1)}<i style="--w:${Math.min(value / data.cases[key].item_max[code], 1)}"></i></span>`
-        ).join("");
-        return `<div class="result-row drop" style="${vendorStyle(row)}">
-          <span class="result-rank">${String(result.rank).padStart(2, "0")}</span>
-          ${modelCell(row)}
-          <strong>${count(result.total, "", 1)}</strong>
-          <span class="raw-score">${fmt(result.raw_total, 2)} / ${task.ref}</span>
-          <div class="mini-items" title="${esc(Object.values(itemNames).join(" · "))}">${items}</div>
-        </div>`;
-      }).join("")}
-    </div>`;
   }
 
   function boardIntro(code, en, title, note) {

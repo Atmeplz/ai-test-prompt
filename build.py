@@ -2,31 +2,26 @@
 # -*- coding: utf-8 -*-
 """生成七题四方向制的公开静态站点。
 
-本脚本只读取项目里的评分与提示词事实源，只写入 pages/：
-data/site.json、首页、四张榜单页和七张题目页。
+本脚本只读取项目里的评分事实源，只写入 pages/：
+data/site.json、首页和四张榜单页。
 """
 
 import html
 import json
 import pathlib
-import re
 
 
 ROOT = pathlib.Path(__file__).resolve().parent
 PROJECT = ROOT.parent
 BOARD_JSON = PROJECT / "评分数据" / "out" / "board-data.json"
 SITE_JSON = ROOT / "data" / "site.json"
-PROMPT_ROOT = PROJECT / "prompts" / "提示词"
-ASSET_VERSION = "20260830-6"
+ASSET_VERSION = "20260831-4"
 
-PROMPT_FILES = {
-    "1_novel_creation": PROMPT_ROOT / "1_novel_creation.md",
-    "2_article_reading": PROMPT_ROOT / "2_article_reading.md",
-    "3_chinese_architecture": PROMPT_ROOT / "3_chinese_architecture.md",
-    "4_voxel_mountain": PROMPT_ROOT / "4_voxel_mountain.md",
-    "5_frontend_page": PROMPT_ROOT / "5_frontend_page.md",
-    "6_backend_mes": PROMPT_ROOT / "6_backend_mes" / "README.md",
-    "7_blackhole_sim": PROMPT_ROOT / "7_blackhole_sim.md",
+ANNOUNCEMENT = {
+    "id": "notice-001",
+    "tag": "NOTICE // 001",
+    "title": "提示词正在整理中，暂不开放浏览。",
+    "copy": "后续可直接下载规范的题目包",
 }
 
 BOARD_PAGES = [
@@ -67,6 +62,11 @@ def public_case(case: dict) -> dict:
         "adjust", "raw_adjust", "base", "conflict", "raw_conflict",
     )
     return {key: case[key] for key in keys if key in case}
+
+
+def public_task(task: dict) -> dict:
+    keys = ("order", "zh", "name", "domain", "ref")
+    return {key: task[key] for key in keys}
 
 
 def build_site_json() -> dict:
@@ -110,7 +110,7 @@ def build_site_json() -> dict:
         },
         "norm": raw["norm"],
         "directions": raw["directions"],
-        "tasks": raw["tasks"],
+        "tasks": {key: public_task(task) for key, task in raw["tasks"].items()},
         "vendors": raw["vendors"],
         "cases": raw["cases"],
         "rows": rows,
@@ -159,6 +159,14 @@ def topnav(active: str) -> str:
 </header>"""
 
 
+def announcement() -> str:
+    return f"""<aside class="site-notice" data-notice="{esc(ANNOUNCEMENT['id'])}" aria-label="全站公告">
+  <span class="notice-index"><b>公告</b>{esc(ANNOUNCEMENT['tag'])}</span>
+  <p><strong>{esc(ANNOUNCEMENT['title'])}</strong><span>{esc(ANNOUNCEMENT['copy'])}</span></p>
+  <button class="notice-close" type="button" aria-label="关闭公告">×</button>
+</aside>"""
+
+
 def footer(site: dict) -> str:
     meta = site["meta"]
     return f"""<footer class="site-foot">
@@ -175,23 +183,11 @@ def hero_meta(rows: list[tuple[str, str]]) -> str:
 
 def index_body(site: dict) -> str:
     meta = site["meta"]
-    task_cards = []
-    for key, task in site["tasks"].items():
-        no = task["order"]
-        weights = " · ".join(
-            f"{site['directions'][direction]['en']} {weight * 100:g}%"
-            for direction, weight in task["weight"].items()
-        )
-        task_cards.append(f"""<a class="task-card drop" href="tc-{no:02}.html">
-  <div class="task-no">{no:02}</div>
-  <div class="task-copy"><span>{esc(task['domain'])}</span><h3>{esc(task['name'])}</h3><p>{esc(task['band'])}</p></div>
-  <div class="task-weight">{esc(weights)}<b>↗</b></div>
-</a>""")
-
     return f"""{head('AI 能力专项测试 · 七题四方向公开榜', '七个真实任务、四个能力方向，同一套检查点体系下的 AI 模型横向实测。')}
 <body class="home-page">
 {page_grid()}
 {topnav('index.html')}
+{announcement()}
 
 <main>
   <section class="home-hero">
@@ -222,109 +218,10 @@ def index_body(site: dict) -> str:
     <div id="direction-preview" class="direction-grid"></div>
   </section>
 
-  <section class="report-section" id="tasks">
-    <header class="section-head">
-      <div><span>// TASK INDEX</span><h2>七个真实任务</h2></div>
-      <p>文字、代码、视觉与知识<br>从交付结果反推能力</p>
-    </header>
-    <div class="task-list">{''.join(task_cards)}</div>
-  </section>
-
   <section class="method-band">
     <div><span>// METHOD</span><strong>每题以全库基准归一，四方向按固定权重合成。</strong></div>
-    <p>本站只公开题面、检查点、排名与分数；评分备注与内部裁决记录不公开。</p>
+    <p>本站公开榜单、检查点统计、排名与分数；提示词整理完成后将提供规范题目包。</p>
   </section>
-</main>
-
-{footer(site)}
-<script src="assets/app.js?v={ASSET_VERSION}" defer></script>
-</body>
-</html>
-"""
-
-
-def render_prompt_lines(text: str) -> str:
-    output = []
-    for index, line in enumerate(text.replace("\r\n", "\n").split("\n"), 1):
-        classes = ["prompt-line"]
-        if re.match(r"^#{1,6}\s", line):
-            classes.append("prompt-heading")
-        elif re.match(r"^\s*(?:-{3,}|\*{3,})\s*$", line):
-            classes.append("prompt-rule")
-        output.append(
-            f'<div class="{" ".join(classes)}"><span>{index:03d}</span><code>{esc(line) or " "}</code></div>'
-        )
-    return "\n".join(output)
-
-
-def task_body(key: str, task: dict, site: dict) -> str:
-    no = task["order"]
-    prompt = PROMPT_FILES[key].read_text(encoding="utf-8")
-    tasks = list(site["tasks"].items())
-    previous = tasks[(no - 2) % len(tasks)][1]
-    following = tasks[no % len(tasks)][1]
-    points = "".join(
-        f'<li><b>{esc(point["code"])}</b><span>{esc(point["label"])}</span></li>'
-        for point in task["points"]
-    )
-    weights = "".join(
-        f'<span>{esc(site["directions"][direction]["en"])} <b>{weight * 100:g}%</b></span>'
-        for direction, weight in task["weight"].items()
-    )
-    work_label = {"live": "实机交付", "excerpt": "文本 / 摘录", "package": "工程包"}.get(task["work"], task["work"])
-
-    return f"""{head(f'{no:02} {task["name"]} · AI 能力专项测试', f'{task["name"]}的公开题面、检查点与成绩排名。')}
-<body class="task-page">
-{page_grid()}
-{topnav('')}
-
-<main>
-  <section class="inner-hero task-hero">
-    {hero_meta([('TASK', f'{no:02} / 07'), ('DOMAIN', task['domain']), ('PROMPT', task['prompt_ver'].upper())])}
-    <div class="inner-kicker">{esc(task['kicker'])}</div>
-    <h1 class="inner-title reveal delay-1">{''.join(f'<span>{esc(line)}</span>' for line in task['lines'])}</h1>
-    <div class="inner-band band-in"><strong>{esc(task['band'])}</strong><div>{weights}</div></div>
-    <div class="inner-folio">TASK.{no:02} // {esc(task['en'])}</div>
-  </section>
-
-  <section class="report-section task-brief">
-    <header class="section-head">
-      <div><span>// BRIEF</span><h2>题目档案</h2></div>
-      <p>{esc(task['en'])}<br>{esc(task['domain'])}</p>
-    </header>
-    <div class="brief-grid">
-      <div><span>任务</span><strong>{esc(task['name'])}</strong></div>
-      <div><span>交付形态</span><strong>{esc(work_label)}</strong></div>
-      <div><span>原始参考分</span><strong>{task['ref']}</strong></div>
-      <div><span>检查点</span><strong>{len(task['points'])}</strong></div>
-    </div>
-    <ol class="checkpoint-list">{points}</ol>
-  </section>
-
-  <section class="report-section task-ranking-section">
-    <header class="section-head">
-      <div><span>// RESULT WINDOW</span><h2>本题排名</h2></div>
-      <p>归一分 / 原始分<br>逐检查点拆解</p>
-    </header>
-    <div class="task-ranking" data-task="{esc(key)}"></div>
-  </section>
-
-  <section class="report-section prompt-section">
-    <header class="section-head">
-      <div><span>// PROMPT SOURCE</span><h2>完整题面</h2></div>
-      <p>{len(prompt)} CHARACTERS<br>{len(prompt.splitlines())} LINES</p>
-    </header>
-    <div class="prompt-window">
-      <div class="prompt-bar"><span>PROMPT.{no:02} / {esc(key.upper())}</span><b>PUBLIC SOURCE</b></div>
-      <div class="prompt-body">{render_prompt_lines(prompt)}</div>
-      <div class="prompt-end">// END OF PROMPT</div>
-    </div>
-  </section>
-
-  <nav class="task-switch">
-    <a href="tc-{previous['order']:02}.html"><span>← PREVIOUS</span><b>{esc(previous['zh'])}</b></a>
-    <a href="tc-{following['order']:02}.html"><span>NEXT →</span><b>{esc(following['zh'])}</b></a>
-  </nav>
 </main>
 
 {footer(site)}
@@ -340,6 +237,7 @@ def board_body(board: dict, site: dict) -> str:
 <body class="board-page">
 {page_grid()}
 {topnav(f'board-{board["no"]}.html')}
+{announcement()}
 
 <main>
   <section class="inner-hero board-hero">
@@ -362,32 +260,12 @@ def board_body(board: dict, site: dict) -> str:
 """
 
 
-def archived_page(site: dict) -> str:
-    return f"""{head('八题制归档 · AI 能力专项测试', '旧八题制页面已经合并进新的七题四方向体系。')}
-<body class="archive-page">
-{page_grid()}
-{topnav('')}
-<main class="archive-note">
-  <span>// ARCHIVE.08</span>
-  <h1>八题制已归档</h1>
-  <p>当前站点已迁移至七题四方向体系。原 TC-08 黑洞模拟现在是第 7 题。</p>
-  <a href="tc-07.html">前往黑洞模拟 →</a>
-</main>
-{footer(site)}
-</body>
-</html>
-"""
-
-
 def main() -> None:
     site = build_site_json()
     (ROOT / "index.html").write_text(index_body(site), encoding="utf-8")
-    for key, task in site["tasks"].items():
-        (ROOT / f"tc-{task['order']:02}.html").write_text(task_body(key, task, site), encoding="utf-8")
-    (ROOT / "tc-08.html").write_text(archived_page(site), encoding="utf-8")
     for board in BOARD_PAGES:
         (ROOT / f"board-{board['no']}.html").write_text(board_body(board, site), encoding="utf-8")
-    print("generated: index + 7 tasks + 4 boards + archive + data/site.json")
+    print("generated: index + 4 boards + data/site.json")
 
 
 if __name__ == "__main__":
