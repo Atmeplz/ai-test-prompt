@@ -1,463 +1,254 @@
-/* 站点数据渲染层 —— 读取 data/site.json（由 build.py 从 scores.yaml 派生，禁止手改）
-   公开口径：只渲染排名 / 分数 / 百分位 / 六维；评分备注、金句、判例等审计内容不上站。 */
 (function () {
   "use strict";
 
-  const esc = (s) =>
-    String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const fmt = (x) => {
-    if (x === null || x === undefined || Number.isNaN(x)) return "—";
-    const r = Math.round(x * 100 + 1e-9) / 100;
-    return Math.abs(r - Math.round(r)) < 1e-9 ? String(Math.round(r)) : String(r).replace(/0+$/, "").replace(/\.$/, "");
-  };
-  const pct = (x) => (x === null || x === undefined ? "—" : x.toFixed(1) + "%");
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  })[char]);
+  const fmt = (value, digits = 2) => Number(value).toFixed(digits).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+  const pct = (value) => `${Number(value).toFixed(1)}%`;
 
-  const TCS = ["tc-01", "tc-02", "tc-03", "tc-04", "tc-05", "tc-06", "tc-07", "tc-08"];
-  const TC_SHORT = TCS.map((t) => t.toUpperCase());
+  fetch("data/site.json?v=20260830-6")
+    .then((response) => response.json())
+    .then((data) => boot(data));
 
-  /* 当前页导航高亮 */
-  const file = location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll(".topnav nav a").forEach((a) => {
-    const href = a.getAttribute("href");
-    if (href === file) a.classList.add("on");
-  });
+  function boot(data) {
+    const rows = data.rows.filter((row) => row.complete).sort((a, b) => a.rank - b.rank);
 
-  const needData = document.querySelector("[data-site]") || document.getElementById("top-preview");
-  if (!needData) return;
+    if ($("#top-preview")) renderTopPreview(data, rows);
+    if ($("#direction-preview")) renderDirectionPreview(data, rows);
+    if ($("[data-task]")) renderTaskRanking(data, rows, $("[data-task]"));
 
-  fetch("data/site.json")
-    .then((r) => { if (!r.ok) throw new Error("site.json " + r.status); return r.json(); })
-    .then((data) => {
-      fillStats(data);
-      const el = document.querySelector("[data-site]");
-      if (document.getElementById("top-preview")) renderTopPreview(data);
-      if (!el) return;
-      const board = el.getAttribute("data-site");
-      if (board === "01") renderBoard01(el, data);
-      if (board === "02") renderBoard02(el, data);
-      if (board === "03") renderBoard03(el, data);
-      if (board === "04") renderBoard04(el, data);
-    })
-    .catch((e) => {
-      const el = document.querySelector("[data-site]");
-      if (el) el.innerHTML = `<div class="notebox">数据加载失败：${esc(e.message)}。请先运行 <b>python build.py</b> 生成 data/site.json。</div>`;
-    });
+    const board = $("[data-site]");
+    if (board) {
+      const renderers = {
+        "01": renderTotalBoard,
+        "02": renderTaskBoard,
+        "03": renderCheckpointBoard,
+        "04": renderDirectionBoard,
+      };
+      renderers[board.dataset.site](board, data, rows);
+    }
 
-  /* ---------- 通用 ---------- */
-  function vendorDot(data, key) {
-    const v = data.vendors[key];
-    const bg = v && v.gradient
-      ? `background:linear-gradient(135deg,${v.gradient.join(",")})`
-      : `background:${(v && v.color) || "#94a3b8"}`;
-    return `<i class="vd" style="${bg}" title="${esc((v && v.display) || key)}"></i>`;
+    animateNumbers();
+    requestAnimationFrame(() => document.body.classList.add("is-ready"));
   }
 
-  function fillStats(data) {
-    document.querySelectorAll("[data-stat]").forEach((n) => {
-      const k = n.getAttribute("data-stat");
-      const v =
-        k === "runs" ? data.meta.N_total :
-        k === "complete" ? data.meta.N_complete :
-        k === "updated" ? data.meta.latest :
-        k === "cases" ? "8" : "";
-      if (v !== "") n.textContent = v;
-    });
+  function vendorStyle(row) {
+    const background = row.gradient
+      ? `linear-gradient(135deg,${row.gradient.join(",")})`
+      : row.color || "#0d0d0d";
+    return `--vendor:${row.color || "#0d0d0d"};--vendor-bg:${background}`;
   }
 
-  function medal(rk) { return rk === 1 ? "🥇" : rk === 2 ? "🥈" : rk === 3 ? "🥉" : ""; }
-
-  /* ---------- 首页 Top5 速览 ---------- */
-  function renderTopPreview(data) {
-    const box = document.getElementById("top-preview");
-    const full = data.rows.filter((r) => r.complete).sort((a, b) => a.rank - b.rank).slice(0, 5);
-    box.innerHTML = `<div class="topbar-card">` + full.map((r) => `
-      <a class="toprow" href="board-01.html">
-        <span class="rk">${r.rank}</span>
-        <span class="nm">${vendorDot(data, r.vendor)}<span class="t">${esc(r.board)}</span></span>
-        <span class="bar"><i data-w="${r.pct}"></i></span>
-        <span class="sc">${fmt(r.total)}</span>
-      </a>`).join("") + `</div>`;
-    requestAnimationFrame(() =>
-      box.querySelectorAll(".bar i").forEach((i) => (i.style.width = i.getAttribute("data-w") + "%")));
+  function vendorMark(row) {
+    return `<i class="vendor-mark" style="${vendorStyle(row)}"></i>`;
   }
 
-  /* ---------- 01 总分榜 ---------- */
-  function renderBoard01(el, data) {
-    const full = data.rows.filter((r) => r.complete).sort((a, b) => a.rank - b.rank);
-    const caseSum = (r) => TCS.reduce((s, tc) => s + (r.cases[tc] ? r.cases[tc].total : 0), 0);
-    const pend = data.rows.filter((r) => !r.complete)
-      .sort((a, b) => caseSum(b) - caseSum(a) || a.board.localeCompare(b.board));
+  function modelCell(row) {
+    return `<span class="model-cell">${vendorMark(row)}<span><b>${esc(row.model)}</b><small>${esc(row.effort || "default")} · ${esc(row.platform || row.source || "direct")}</small></span></span>`;
+  }
 
-    const top3 = [full[1], full[0], full[2]].filter(Boolean);
-    const podium = `<div class="podium">` + top3.map((r) => `
-      <div class="pod ${r.rank === 1 ? "p1" : ""}">
-        <div class="halo"></div>
-        <div class="medal">${medal(r.rank)}</div>
-        <div class="nm">${vendorDot(data, r.vendor)}${esc(r.board)}</div>
-        <div class="sc">${fmt(r.total)}</div>
-        <div class="pc">百分位 ${pct(r.pct)} · 百分制 ${pct(r.pct100)}</div>
-      </div>`).join("") + `</div>`;
+  function count(value, suffix = "", digits = 1) {
+    return `<span class="countup" data-count="${Number(value)}" data-digits="${digits}" data-suffix="${esc(suffix)}">${fmt(value, digits)}${suffix}</span>`;
+  }
 
-    const rows = full.map((r) => {
-      const chips = TCS.map((tc, i) => {
-        const c = r.cases[tc];
-        return c ? `<span class="casechip">${TC_SHORT[i]} <b>${fmt(c.total)}</b> · ${pct(c.pct)}</span>` : "";
-      }).join("");
-      return `
-      <tr class="tp${r.rank <= 3 ? r.rank : ""}">
-        <td><span class="rk">${r.rank}</span></td>
-        <td><span class="nm">${vendorDot(data, r.vendor)}${esc(r.board)}</span></td>
-        <td class="num strong">${fmt(r.total)} <span style="color:var(--ink-3);font-weight:400">/ ${data.meta.total_max}</span></td>
-        <td><span class="mini-bar"><i style="width:${r.pct}%"></i></span><span class="pct">${pct(r.pct)}</span></td>
-        <td class="num">${pct(r.pct100)}</td>
-        <td class="pct">${esc(r.tested || "—")}</td>
-        <td><button class="rowbtn" data-x>＋</button></td>
-      </tr>
-      <tr class="detail"><td colspan="7"><div class="casechips">${chips}</div></td></tr>`;
+  function renderTopPreview(data, rows) {
+    $("#top-preview").innerHTML = rows.slice(0, 5).map((row) => `
+      <a class="preview-row drop" href="board-01.html" style="${vendorStyle(row)}">
+        <span class="preview-rank">No. ${String(row.rank).padStart(2, "0")}</span>
+        <span class="preview-model">${vendorMark(row)}<b>${esc(row.model)}</b><small>${esc(row.vendor_display)}</small></span>
+        <span class="preview-score">${count(row.total, "", 1)}<small>/ ${data.meta.total_ref}</small></span>
+        <span class="preview-pct">${pct(row.pct100)}</span>
+        <i class="score-rule"><i style="--w:${Math.min(row.pct100, 100) / 100}"></i></i>
+      </a>
+    `).join("");
+  }
+
+  function renderDirectionPreview(data, rows) {
+    $("#direction-preview").innerHTML = Object.entries(data.directions).map(([key, direction], index) => {
+      const ranking = rows.slice().sort((a, b) => a.directions[key].rank - b.directions[key].rank);
+      const leader = ranking[0];
+      return `<a class="direction-card drop" style="--delay:${index * 80}ms;${vendorStyle(leader)}" href="board-04.html#${key}">
+        <span class="direction-index">0${index + 1} / 04</span>
+        <h3>${esc(direction.zh)}</h3>
+        <em>${esc(direction.en)}</em>
+        <div class="direction-leader">${vendorMark(leader)}<span><small>LEADER</small><b>${esc(leader.model)}</b></span></div>
+        <strong>${count(leader.directions[key].value, "", 1)}</strong>
+        <span class="direction-arrow">↗</span>
+      </a>`;
     }).join("");
-
-    /* 配置维度对比（同模型多配置） */
-    const byModel = {};
-    full.forEach((r) => (byModel[r.model] = byModel[r.model] || []).push(r));
-    const multi = Object.entries(byModel).filter(([, rs]) => rs.length > 1);
-    let cmp = "";
-    if (multi.length) {
-      cmp = `<div class="sec-sub">CONFIG COMPARE · 配置维度对比</div>` + multi.map(([m, rs]) => {
-        rs = rs.slice().sort((a, b) => b.total - a.total);
-        /* 标签：组内 effort 互不相同时用 effort（如 max vs high）；
-           effort 相同时差别在渠道——用 platform（含 source）区分（如 qoder vs zcode） */
-        const sameEffort = rs.every((r) => !r.effort || r.effort === rs[0].effort);
-        const label = (r) => sameEffort
-          ? `${r.platform || "?"}${r.source ? `/${r.source}` : ""}`
-          : (r.effort || r.platform || "?");
-        const head = `<tr><th>配置</th>${TCS.map((t) => `<th>${t.toUpperCase()}</th>`).join("")}<th>合计</th></tr>`;
-        const body = rs.map((r) => `<tr>
-          <td class="nm">${vendorDot(data, r.vendor)}${esc(label(r))}</td>
-          ${TCS.map((tc) => `<td class="num">${fmt(r.cases[tc] && r.cases[tc].total)}</td>`).join("")}
-          <td class="num strong">${fmt(r.total)}</td></tr>`).join("");
-        const win = `<tr><td style="color:var(--ink-3);font-weight:700">胜方</td>
-          ${TCS.map((tc) => {
-            const a = rs[0].cases[tc] && rs[0].cases[tc].total, b = rs[1] && rs[1].cases[tc] && rs[1].cases[tc].total;
-            const w = a === b ? "平" : a > b ? label(rs[0]) : label(rs[1]);
-            return `<td class="pct">${esc(w)}</td>`;
-          }).join("")}<td></td></tr>`;
-        return `<h3 style="margin:0 0 12px;font-size:15px">${esc(m)} <span style="color:var(--ink-3);font-weight:500;font-size:12px">${esc(label(rs[0]))} vs ${esc(label(rs[1]))}</span></h3>
-        <div class="btable"><div class="scroll"><table><thead>${head}</thead><tbody>${body}${win}</tbody></table></div></div>`;
-      }).join("");
-    }
-
-    /* 迁移期参考排名 */
-    let ref = "";
-    if (pend.length) {
-      const rows2 = pend.map((r, i) => {
-        const done = TCS.filter((tc) => r.cases[tc]).length;
-        return `<tr>
-          <td><span class="rk">${i + 1}</span></td>
-          <td><span class="nm">${vendorDot(data, r.vendor)}${esc(r.board)}</span></td>
-          <td class="num strong">${fmt(caseSum(r))}</td>
-          <td><span class="tag ${done >= 5 ? "mint" : ""}">${done}/8</span></td>
-          ${TCS.map((tc) => `<td class="num">${r.cases[tc] ? fmt(r.cases[tc].total) : '<span style="color:var(--ink-3)">—</span>'}</td>`).join("")}
-        </tr>`;
-      }).join("");
-      ref = `<div class="sec-sub">REFERENCE · 迁移期参考排名（非完整总分）</div>
-        <div class="notebox">以下 run 尚未集齐 8 个用例，按<b>已评用例合计</b>排序，仅供参考，不参与正式总分榜。</div>
-        <div class="btable"><div class="scroll"><table>
-          <thead><tr><th>排名</th><th>模型 × 配置</th><th>已评合计</th><th>完成度</th>${TCS.map((t) => `<th>${t.toUpperCase()}</th>`).join("")}</tr></thead>
-          <tbody>${rows2}</tbody></table></div></div>`;
-    }
-
-    el.innerHTML = `
-      ${podium}
-      <div class="sec-sub">FULL RANKING · 完整排名（${full.length} 个 run 八用例全齐）</div>
-      <div class="btable"><div class="scroll"><table>
-        <thead><tr><th>排名</th><th>模型 × 配置</th><th>合计分</th><th>百分位</th><th>百分制</th><th>评分日期</th><th></th></tr></thead>
-        <tbody>${rows}</tbody></table></div></div>
-      ${cmp}${ref}`;
-
-    el.querySelectorAll("[data-x]").forEach((b) =>
-      b.addEventListener("click", () => {
-        const tr = b.closest("tr");
-        tr.classList.toggle("open");
-        b.textContent = tr.classList.contains("open") ? "－" : "＋";
-      }));
   }
 
-  /* ---------- 02 用例榜 ---------- */
-  function renderBoard02(el, data) {
-    const tabs = TCS.map((tc, i) => `<button data-tc="${tc}" class="${i === 0 ? "on" : ""}">${TC_SHORT[i]}</button>`).join("");
-    el.innerHTML = `<div class="tabs">${tabs}</div><div id="case-pane"></div>`;
-    const pane = el.querySelector("#case-pane");
+  function renderTaskRanking(data, rows, target) {
+    const key = target.dataset.task;
+    const task = data.tasks[key];
+    const itemNames = data.cases[key].items;
+    const ranking = rows.filter((row) => row.cases[key]).sort((a, b) => a.cases[key].rank - b.cases[key].rank);
 
-    function paneFor(tc) {
-      const meta = data.cases[tc];
-      const have = data.rows.filter((r) => r.cases[tc]).sort((a, b) => a.cases[tc].rank - b.cases[tc].rank);
-      if (!have.length) return `<div class="notebox">该用例暂无评分数据。</div>`;
-
-      let head, rowHtml;
-      if (tc === "tc-05") {
-        head = `<tr><th>排名</th><th>模型 × 配置</th><th>呈现分</th><th>百分位</th><th>对账分(50)</th></tr>`;
-        rowHtml = (r, c) => `
-          <td><span class="rk">${c.rank}</span></td>
-          <td><span class="nm">${vendorDot(data, r.vendor)}${esc(r.board)}</span></td>
-          <td class="num strong">${fmt(c.total)}</td>
-          <td><span class="mini-bar"><i style="width:${c.pct}%"></i></span><span class="pct">${pct(c.pct)}</span></td>
-          <td class="num">${fmt(c.raw)}</td>`;
-      } else if (tc === "tc-07") {
-        const keys = ["G1", "G2", "G3", "G4", "G5", "G6", "G7"];
-        head = `<tr><th>排名</th><th>模型 × 配置</th><th>总分</th><th>百分位</th>${keys.map((k) => `<th>${k}</th>`).join("")}<th>冲突</th></tr>`;
-        rowHtml = (r, c) => `
-          <td><span class="rk">${c.rank}</span></td>
-          <td><span class="nm">${vendorDot(data, r.vendor)}${esc(r.board)}</span></td>
-          <td class="num strong">${fmt(c.total)}</td>
-          <td><span class="mini-bar"><i style="width:${c.pct}%"></i></span><span class="pct">${pct(c.pct)}</span></td>
-          ${keys.map((k) => `<td class="num">${fmt(c.items[k])}</td>`).join("")}
-          <td class="num">${c.conflict > 0 ? "+" : ""}${fmt(c.conflict)}</td>`;
-      } else {
-        const keys = Object.keys(meta.items);
-        head = `<tr><th>排名</th><th>模型 × 配置</th><th>总分</th><th>百分位</th>${keys.map((k) => `<th title="${esc(meta.items[k])}">${k}</th>`).join("")}<th></th></tr>`;
-        rowHtml = (r, c) => {
-          const marks = [c.x1 ? `<span class="tag mint">X1 +${fmt(c.x1)}</span>` : "",
-                         c.adjust ? `<span class="tag rose">调整 ${fmt(c.adjust)}</span>` : ""].join("");
-          return `
-          <td><span class="rk">${c.rank}</span></td>
-          <td><span class="nm">${vendorDot(data, r.vendor)}${esc(r.board)}</span></td>
-          <td class="num strong">${fmt(c.total)}</td>
-          <td><span class="mini-bar"><i style="width:${c.pct}%"></i></span><span class="pct">${pct(c.pct)}</span></td>
-          ${keys.map((k) => `<td class="num">${fmt(c.items[k])}</td>`).join("")}
-          <td>${marks}</td>`;
-        };
-      }
-      const body = have.map((r) => {
-        const c = r.cases[tc];
-        return `<tr class="${c.rank <= 3 ? "tp" + c.rank : ""}">${rowHtml(r, c)}</tr>`;
-      }).join("");
-      return `<div class="btable"><div class="scroll"><table><thead>${head}</thead><tbody>${body}</tbody></table></div></div>
-        <p style="font-size:12px;color:var(--ink-3);margin:-18px 0 34px 6px">${esc(meta.name)} · 满分 ${meta.max} · ${have.length} 个 run 参评 · 百分位 = 得分 ÷ 本用例榜首</p>`;
-    }
-
-    pane.innerHTML = paneFor("tc-01");
-    el.querySelectorAll(".tabs button").forEach((b) =>
-      b.addEventListener("click", () => {
-        el.querySelectorAll(".tabs button").forEach((x) => x.classList.toggle("on", x === b));
-        pane.innerHTML = paneFor(b.getAttribute("data-tc"));
-      }));
-  }
-
-  /* ---------- 03 单项榜（领奖台化：每考察点只公开 Top 3 组） ---------- */
-  function renderBoard03(el, data) {
-    const tabs = TCS.map((tc, i) => `<button data-tc="${tc}" class="${i === 0 ? "on" : ""}">${TC_SHORT[i]}</button>`).join("");
-    el.innerHTML = `<div class="tabs">${tabs}</div><div id="item-pane"></div>`;
-    const pane = el.querySelector("#item-pane");
-
-    function podiumRows(pairs, keep1) {
-      /* pairs: [{board, vendor, v}] → 按分数分组取前 3 档 */
-      const sorted = pairs.slice().sort((a, b) => b.v - a.v || a.board.localeCompare(b.board));
-      const groups = [];
-      for (const p of sorted) {
-        if (groups.length && Math.abs(groups[groups.length - 1].v - p.v) < 1e-9) groups[groups.length - 1].list.push(p);
-        else groups.push({ v: p.v, list: [p] });
-      }
-      const top = sorted.length ? sorted[0].v : 0;
-      return groups.slice(0, 3).map((g, gi) => {
-        const names = g.list.map((p) => esc(p.board)).join(" / ");
-        const pc = top ? Math.round(g.v / top * 1000 + 1e-9) / 10 : 0;
-        return `<div class="row r${gi + 1}">
-          <span class="md">${["1st", "2nd", "3rd"][gi]}</span>
-          <span class="who" title="${names}">${names}${g.list.length > 1 ? ` <span style="color:var(--ink-3)">×${g.list.length}</span>` : ""}</span>
-          <span class="val">${keep1 || !Number.isInteger(g.v) ? fmt(g.v) : g.v}</span>
-          <span class="pc">${pc.toFixed(1)}%</span>
+    target.innerHTML = `<div class="result-window">
+      <div class="result-head"><span>RANK / MODEL</span><span>NORMALIZED</span><span>RAW</span><span>CHECKPOINTS</span></div>
+      ${ranking.map((row) => {
+        const result = row.cases[key];
+        const items = Object.entries(result.items).map(([code, value]) =>
+          `<span><b>${esc(code)}</b>${fmt(value, 1)}<i style="--w:${Math.min(value / data.cases[key].item_max[code], 1)}"></i></span>`
+        ).join("");
+        return `<div class="result-row drop" style="${vendorStyle(row)}">
+          <span class="result-rank">${String(result.rank).padStart(2, "0")}</span>
+          ${modelCell(row)}
+          <strong>${count(result.total, "", 1)}</strong>
+          <span class="raw-score">${fmt(result.raw_total, 2)} / ${task.ref}</span>
+          <div class="mini-items" title="${esc(Object.values(itemNames).join(" · "))}">${items}</div>
         </div>`;
-      }).join("");
-    }
-
-    function paneFor(tc) {
-      const meta = data.cases[tc];
-      const have = data.rows.filter((r) => r.cases[tc]);
-      if (!have.length) return `<div class="notebox">该用例暂无评分数据。</div>`;
-      const cards = [];
-
-      const items = [];
-      if (tc === "tc-05") items.push({ k: "__raw", label: "对账总分（→呈现 ×0.4）", max: 50 });
-      Object.entries(meta.items).forEach(([k, nm]) =>
-        items.push({ k, label: `${k} ${nm}`, max: meta.item_max[k] }));
-      if (tc === "tc-07") {
-        items.push({ k: "__conflict", label: "冲突处理（±）", max: "±" });
-        items.push({ k: "__total", label: "总分（100 + 冲突）", max: 100 });
-      }
-
-      for (const it of items) {
-        const pairs = [];
-        for (const r of have) {
-          const c = r.cases[tc];
-          let v;
-          if (it.k === "__raw") v = c.raw;
-          else if (it.k === "__conflict") v = c.conflict;
-          else if (it.k === "__total") v = c.total;
-          else v = c.items[it.k];
-          if (v !== undefined && v !== null) pairs.push({ board: r.board, vendor: r.vendor, v });
-        }
-        if (!pairs.length) continue;
-        /* 不足三档加注：全场并列满分 / 并列后仅两档（2026-08-22 用户裁决） */
-        const vs = pairs.map((p) => p.v).sort((a, b) => b - a);
-        const tiers = [];
-        for (const v of vs) {
-          if (tiers.length && Math.abs(tiers[tiers.length - 1] - v) < 1e-9) continue;
-          tiers.push(v);
-        }
-        let note = "";
-        if (tiers.length === 1 && it.max !== "±" && Math.abs(tiers[0] - it.max) < 1e-9) note = " · 全场并列满分";
-        else if (tiers.length === 1) note = " · 全场同分";
-        else if (tiers.length < 3) note = ` · 并列后仅 ${tiers.length} 档`;
-        cards.push(`<div class="itemcard">
-          <div class="ih"><b>${esc(it.label)}</b><span>满分 ${it.max} · ${pairs.length} 参评${note}</span></div>
-          ${podiumRows(pairs, tc !== "tc-07")}
-        </div>`);
-      }
-      return `<div class="itemgrid">${cards.join("")}</div>
-        <p style="font-size:12px;color:var(--ink-3);margin:-20px 0 40px 6px">每考察点公开前三名（含并列）；完整逐行记录与评分备注留存在内部评分档案。</p>`;
-    }
-
-    pane.innerHTML = paneFor("tc-01");
-    el.querySelectorAll(".tabs button").forEach((b) =>
-      b.addEventListener("click", () => {
-        el.querySelectorAll(".tabs button").forEach((x) => x.classList.toggle("on", x === b));
-        pane.innerHTML = paneFor(b.getAttribute("data-tc"));
-      }));
+      }).join("")}
+    </div>`;
   }
 
-  /* ---------- 04 六维雷达（交互 SVG，排名换算百分位口径） ---------- */
-  function renderBoard04(el, data) {
-    const full = data.rows.filter((r) => r.complete && r.radar).sort((a, b) => a.rank - b.rank);
-    if (!full.length) { el.innerHTML = `<div class="notebox">暂无完整六维数据。</div>`; return; }
-    const dims = data.radar_dims;
+  function boardIntro(code, en, title, note) {
+    return `<header class="content-head"><span>// ${esc(code)}</span><div><h2>${esc(title)}</h2><p>${esc(note)}</p></div><b>${esc(en)}</b></header>`;
+  }
 
-    let sel = full[0].board, cmp = null, mode = "pct";
+  function renderTotalBoard(target, data, rows) {
+    const podium = rows.slice(0, 3).map((row, index) => `
+      <article class="podium-card rank-${index + 1} drop" style="${vendorStyle(row)}">
+        <span>No. ${String(row.rank).padStart(2, "0")}</span>
+        <div>${vendorMark(row)}<b>${esc(row.model)}</b><small>${esc(row.vendor_display)} · ${esc(row.effort || "default")}</small></div>
+        <strong>${count(row.total, "", 1)}</strong>
+        <em>/ ${data.meta.total_ref}</em>
+        <i><i style="--w:${Math.min(row.pct100, 100) / 100}"></i></i>
+        <p>${pct(row.pct100)} OF REFERENCE</p>
+      </article>
+    `).join("");
 
-    el.innerHTML = `
-      <div class="radar-wrap">
-        <div class="radar-card">
-          <div class="seg">
-            <button data-m="pct" class="on">百分位（排名换算）</button>
-            <button data-m="val">原始值（10 分制）</button>
-          </div>
-          <svg id="radar" viewBox="0 0 560 520" role="img" aria-label="六维雷达图"></svg>
-          <div class="radar-legend" id="radar-legend"></div>
-        </div>
-        <div class="panel">
-          <h3>选择模型</h3>
-          <p class="hint">单击为主选（蓝），再点另一个为对比（薄荷绿），重复点击取消对比。</p>
-          <div class="model-list" id="model-list"></div>
-          <div class="dimvals" id="dimvals"></div>
-        </div>
+    const directionHeads = Object.values(data.directions).map((direction) => `<th>${esc(direction.en)}</th>`).join("");
+    const tableRows = rows.map((row) => `
+      <tr style="${vendorStyle(row)}">
+        <td class="rank-cell">${String(row.rank).padStart(2, "0")}</td>
+        <td>${modelCell(row)}</td>
+        ${Object.keys(data.directions).map((key) => `<td>${fmt(row.directions[key].value, 1)}</td>`).join("")}
+        <td class="total-cell">${fmt(row.total, 1)}</td>
+        <td>${pct(row.pct100)}</td>
+      </tr>
+    `).join("");
+
+    target.innerHTML = `
+      ${boardIntro("FINAL", "REFERENCE 400", "总榜名次", "总分 = 文字 + 前端 + 后端 + 知识")}
+      <div class="podium-grid">${podium}</div>
+      <div class="table-shell">
+        <table class="report-table total-table">
+          <thead><tr><th>NO.</th><th>MODEL / RUN</th>${directionHeads}<th>TOTAL</th><th>REF.</th></tr></thead>
+          <tbody>${tableRows}</tbody>
+        </table>
       </div>`;
+  }
 
-    const svg = el.querySelector("#radar");
-    const list = el.querySelector("#model-list");
-    const dimvals = el.querySelector("#dimvals");
-    const legend = el.querySelector("#radar-legend");
+  function taskTabs(data, active) {
+    return `<div class="report-tabs">${Object.entries(data.tasks).map(([key, task]) =>
+      `<button type="button" data-key="${esc(key)}" class="${key === active ? "on" : ""}"><span>${String(task.order).padStart(2, "0")}</span><b>${esc(task.zh)}</b></button>`
+    ).join("")}</div>`;
+  }
 
-    list.innerHTML = full.map((r) => `
-      <button data-b="${esc(r.board)}" class="${r.board === sel ? "on" : ""}">
-        ${vendorDot(data, r.vendor)}<span class="mn">${esc(r.board)}</span>
-        <span class="mv">均值 ${fmt(r.radar_mean)}</span>
-      </button>`).join("");
+  function taskTable(data, rows, key) {
+    const task = data.tasks[key];
+    const caseMeta = data.cases[key];
+    const ranking = rows.filter((row) => row.cases[key]).sort((a, b) => a.cases[key].rank - b.cases[key].rank);
+    const itemCodes = Object.keys(caseMeta.items);
 
-    /* 几何 */
-    const CX = 280, CY = 262, R = 168;
-    const N = dims.length;
-    const ang = (i) => -Math.PI / 2 + (i * 2 * Math.PI) / N;
-    const pt = (i, ratio) => [CX + R * ratio * Math.cos(ang(i)), CY + R * ratio * Math.sin(ang(i))];
-    const valuesOf = (r) => r.radar.map((d) => (mode === "pct" ? d.pct / 100 : d.value / 10));
+    return `<div class="task-board-head">
+        <div><span>// TASK.${String(task.order).padStart(2, "0")}</span><h3>${esc(task.name)}</h3><p>${esc(task.domain)}</p></div>
+        <div><b>${task.ref}</b><span>RAW REFERENCE</span></div>
+      </div>
+      <div class="table-shell"><table class="report-table task-table">
+        <thead><tr><th>NO.</th><th>MODEL / RUN</th><th>NORM.</th><th>RAW</th>${itemCodes.map((code) => `<th>${esc(code)}<small>${esc(caseMeta.items[code])}</small></th>`).join("")}</tr></thead>
+        <tbody>${ranking.map((row) => {
+          const result = row.cases[key];
+          return `<tr style="${vendorStyle(row)}"><td class="rank-cell">${String(result.rank).padStart(2, "0")}</td><td>${modelCell(row)}</td><td class="total-cell">${fmt(result.total, 1)}</td><td>${fmt(result.raw_total, 2)}</td>${itemCodes.map((code) => `<td>${fmt(result.items[code], 1)}</td>`).join("")}</tr>`;
+        }).join("")}</tbody>
+      </table></div>`;
+  }
 
-    let cur = null, curCmp = null; // 动画插值
-    function poly(vals) { return vals.map((v, i) => pt(i, Math.max(0, Math.min(1, v))).join(",")).join(" "); }
+  function renderTaskBoard(target, data, rows) {
+    const first = Object.keys(data.tasks)[0];
+    target.innerHTML = `${boardIntro("TASKS", "07 TASKS", "逐题排名", "归一分与原始分同时保留")}${taskTabs(data, first)}<div class="tab-pane">${taskTable(data, rows, first)}</div>`;
+    bindTabs(target, (key) => taskTable(data, rows, key));
+  }
 
-    function draw(selVals, cmpVals) {
-      const rings = [0.25, 0.5, 0.75, 1].map((r) =>
-        `<polygon points="${Array.from({ length: N }, (_, i) => pt(i, r).join(",")).join(" ")}"
-          fill="${r === 1 ? "rgba(91,140,255,.05)" : "none"}" stroke="rgba(14,23,38,.1)" stroke-width="1"/>`).join("");
-      const axes = dims.map((d, i) => {
-        const [x, y] = pt(i, 1);
-        const [lx, ly] = pt(i, 1.17);
-        return `<line x1="${CX}" y1="${CY}" x2="${x}" y2="${y}" stroke="rgba(14,23,38,.09)"/>
-          <text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle"
-            font-size="13.5" font-weight="700" fill="#44506a">${esc(d.no)} ${esc(d.name)}</text>`;
+  function checkpointCards(data, rows, key) {
+    const task = data.tasks[key];
+    const meta = data.cases[key];
+    const cards = Object.entries(meta.items).map(([code, label], itemIndex) => {
+      const ranking = rows
+        .filter((row) => row.cases[key] && row.cases[key].items[code] !== undefined)
+        .sort((a, b) => b.cases[key].items[code] - a.cases[key].items[code]);
+      const levels = [...new Set(ranking.map((row) => row.cases[key].items[code]))].slice(0, 3);
+      const places = levels.map((value, index) => {
+        const tied = ranking.filter((row) => row.cases[key].items[code] === value);
+        return `<li><span>0${index + 1}</span><div>${tied.map((row) => `<b style="${vendorStyle(row)}">${vendorMark(row)}${esc(row.model)}</b>`).join("")}</div><strong>${fmt(value, 1)}</strong></li>`;
       }).join("");
-      const mkDots = (vals, color) => vals.map((v, i) => {
-        const [x, y] = pt(i, Math.max(0, Math.min(1, v)));
-        return `<circle cx="${x}" cy="${y}" r="4.5" fill="${color}" stroke="#fff" stroke-width="2"/>`;
-      }).join("");
-      svg.innerHTML = `
-        <defs>
-          <linearGradient id="rgA" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#5b8cff" stop-opacity=".38"/><stop offset="1" stop-color="#54c8f4" stop-opacity=".3"/>
-          </linearGradient>
-          <linearGradient id="rgB" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#2fd4b6" stop-opacity=".3"/><stop offset="1" stop-color="#9b8cff" stop-opacity=".24"/>
-          </linearGradient>
-        </defs>
-        ${rings}${axes}
-        ${cmpVals ? `<polygon points="${poly(cmpVals)}" fill="url(#rgB)" stroke="#2fd4b6" stroke-width="2" stroke-linejoin="round"/>${mkDots(cmpVals, "#2fd4b6")}` : ""}
-        <polygon points="${poly(selVals)}" fill="url(#rgA)" stroke="#4a7bff" stroke-width="2.5" stroke-linejoin="round"/>
-        ${mkDots(selVals, "#4a7bff")}`;
-    }
+      return `<article class="checkpoint-card drop" style="--delay:${itemIndex * 70}ms"><header><span>${esc(code)}</span><h3>${esc(label)}</h3><b>REF ${fmt(meta.item_max[code], 1)}</b></header><ol>${places}</ol></article>`;
+    }).join("");
+    return `<div class="checkpoint-task-head"><span>// TASK.${String(task.order).padStart(2, "0")}</span><h3>${esc(task.name)}</h3></div><div class="checkpoint-grid">${cards}</div>`;
+  }
 
-    function tweenTo(selVals, cmpVals) {
-      const from = cur || selVals.map(() => 0);
-      const fromC = cmpVals ? curCmp || cmpVals.map(() => 0) : null;
-      const t0 = performance.now();
-      (function step(t) {
-        const k = Math.min(1, (t - t0) / 420);
-        const e = 1 - Math.pow(1 - k, 3);
-        const v = selVals.map((s, i) => from[i] + (s - from[i]) * e);
-        const vc = cmpVals ? cmpVals.map((s, i) => fromC[i] + (s - fromC[i]) * e) : null;
-        draw(v, vc);
-        if (k < 1) requestAnimationFrame(step);
-        else { cur = selVals; curCmp = cmpVals || null; }
-      })(t0);
-    }
+  function renderCheckpointBoard(target, data, rows) {
+    const first = Object.keys(data.tasks)[0];
+    target.innerHTML = `${boardIntro("POINTS", "TOP 3 LEVELS", "检查点索引", "同分并列显示；每个检查点公开前三个分数档")}${taskTabs(data, first)}<div class="tab-pane">${checkpointCards(data, rows, first)}</div>`;
+    bindTabs(target, (key) => checkpointCards(data, rows, key));
+  }
 
-    function refresh() {
-      const a = full.find((r) => r.board === sel);
-      const b = cmp ? full.find((r) => r.board === cmp) : null;
-      tweenTo(valuesOf(a), b ? valuesOf(b) : null);
-      legend.innerHTML =
-        `<span><i style="background:#4a7bff"></i>${esc(a.board)}</span>` +
-        (b ? `<span><i style="background:#2fd4b6"></i>${esc(b.board)}</span>` : "");
-      dimvals.innerHTML = a.radar.map((d, i) => {
-        const v = mode === "pct" ? d.pct : d.value;
-        const ratio = mode === "pct" ? d.pct / 100 : d.value / 10;
-        const cv = b ? (mode === "pct" ? b.radar[i].pct : b.radar[i].value) : null;
-        return `<div class="dimval">
-          <div class="dn">${esc(d.no)} ${esc(d.name)} · ${esc(d.domain)}</div>
-          <div class="dv">${mode === "pct" ? pct(v) : v.toFixed(2)}${cv !== null ? ` <span style="font-size:11px;color:#15977f">vs ${mode === "pct" ? pct(cv) : cv.toFixed(2)}</span>` : ""}</div>
-          <div class="db"><i style="width:${Math.max(0, Math.min(100, ratio * 100))}%"></i></div>
-        </div>`;
-      }).join("");
-      list.querySelectorAll("button").forEach((btn) => {
-        const bb = btn.getAttribute("data-b");
-        btn.classList.toggle("on", bb === sel);
-        btn.classList.toggle("cmp", bb === cmp);
-      });
-    }
+  function directionTable(data, rows, key) {
+    const direction = data.directions[key];
+    const ranking = rows.slice().sort((a, b) => a.directions[key].rank - b.directions[key].rank);
+    const weights = Object.entries(direction.weight).map(([taskKey, weight]) => `<span><b>${esc(data.tasks[taskKey].zh)}</b>${fmt(weight * 100, 0)}%</span>`).join("");
+    return `<div class="direction-board-head">
+        <div><span>// DIRECTION</span><h3>${esc(direction.zh)}</h3><p>${esc(direction.en)}</p></div>
+        <div class="weight-map">${weights}</div>
+      </div>
+      <div class="direction-ranking">${ranking.map((row) => {
+        const score = row.directions[key];
+        return `<div class="direction-row drop" style="${vendorStyle(row)}"><span class="result-rank">${String(score.rank).padStart(2, "0")}</span>${modelCell(row)}<strong>${fmt(score.value, 1)}</strong><span>${pct(score.pct)}</span><i><i style="--w:${Math.min(score.value, 100) / 100}"></i></i></div>`;
+      }).join("")}</div>`;
+  }
 
-    list.addEventListener("click", (e) => {
-      const btn = e.target.closest("button");
-      if (!btn) return;
-      const b = btn.getAttribute("data-b");
-      if (b === sel) { if (cmp) { sel = cmp; cmp = null; } }
-      else if (b === cmp) cmp = null;
-      else if (!cmp && b !== sel) cmp = b;
-      else cmp = b;
-      refresh();
+  function renderDirectionBoard(target, data, rows) {
+    const keys = Object.keys(data.directions);
+    const hashKey = location.hash.slice(1);
+    const first = keys.includes(hashKey) ? hashKey : keys[0];
+    const tabs = `<div class="direction-tabs">${keys.map((key, index) => `<button type="button" data-key="${esc(key)}" class="${key === first ? "on" : ""}"><span>0${index + 1}</span><b>${esc(data.directions[key].zh)}</b><small>${esc(data.directions[key].en)}</small></button>`).join("")}</div>`;
+    target.innerHTML = `${boardIntro("DIRECTIONS", "04 BOARDS", "四方向能力", "方向分天然以 100 为参考")}${tabs}<div class="tab-pane">${directionTable(data, rows, first)}</div>`;
+    bindTabs(target, (key) => {
+      history.replaceState(null, "", `#${key}`);
+      return directionTable(data, rows, key);
     });
-    el.querySelectorAll(".seg button").forEach((b) =>
-      b.addEventListener("click", () => {
-        mode = b.getAttribute("data-m");
-        el.querySelectorAll(".seg button").forEach((x) => x.classList.toggle("on", x === b));
-        cur = null; curCmp = null;
-        refresh();
-      }));
-    refresh();
+  }
+
+  function bindTabs(root, renderer) {
+    const pane = $(".tab-pane", root);
+    $$('[data-key]', root).forEach((button) => {
+      button.addEventListener("click", () => {
+        $$('[data-key]', root).forEach((item) => item.classList.toggle("on", item === button));
+        pane.innerHTML = renderer(button.dataset.key);
+        animateNumbers(pane);
+        requestAnimationFrame(() => pane.classList.add("is-ready"));
+      });
+    });
+  }
+
+  function animateNumbers(root = document) {
+    $$(".countup", root).forEach((node) => {
+      const target = Number(node.dataset.count);
+      const digits = Number(node.dataset.digits);
+      const suffix = node.dataset.suffix || "";
+      const started = performance.now();
+      const duration = 900;
+      function tick(now) {
+        const progress = Math.min(1, (now - started) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        node.textContent = `${fmt(target * eased, digits)}${suffix}`;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
   }
 })();

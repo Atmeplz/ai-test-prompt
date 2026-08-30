@@ -1,100 +1,128 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TC-07 · 库存服务 · 规格陷阱题 — 提示词全库</title>
-<meta name="description" content="TC-07 库存服务 · 规格陷阱题 完整提示词 · AI 能力专项测试">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%235b8cff'/%3E%3Cstop offset='1' stop-color='%232fd4b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Crect x='9' y='9' width='14' height='14' rx='4' fill='white'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/style.css">
+<meta name="theme-color" content="#F4F0E6">
+<title>07 黑洞模拟（广义相对论） · AI 能力专项测试</title>
+<meta name="description" content="黑洞模拟（广义相对论）的公开题面、检查点与成绩排名。">
+<link rel="stylesheet" href="assets/style.css?v=20260830-6">
 </head>
-<body class="page-case">
-<div class="aurora"><i></i><i></i><i></i><i></i></div>
-<div class="gridlines"></div>
-<header class="topnav">
-  <a class="brand" href="index.html"><span class="logo"></span><span class="bt">AI 能力专项测试</span></a>
-  <nav><a href="index.html">首页</a><a href="board-01.html">总分榜</a><a href="board-02.html">用例榜</a><a href="board-03.html">单项榜</a><a href="board-04.html">六维</a></nav>
+<body class="task-page">
+<div class="blueprint-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<span class="reg-cross cross-tl" aria-hidden="true"></span>
+<span class="reg-cross cross-tr" aria-hidden="true"></span>
+<header class="site-nav">
+  <a class="nav-brand" href="index.html"><i></i><span>AI 能力专项测试<small>CAPABILITY BENCHMARK</small></span></a>
+  <nav><a href="index.html"><span>INDEX</span><b>首页</b></a><a href="board-01.html"><span>TOTAL</span><b>总榜</b></a><a href="board-04.html"><span>DIRECTIONS</span><b>方向</b></a><a href="board-02.html"><span>TASKS</span><b>题目</b></a><a href="board-03.html"><span>POINTS</span><b>检查点</b></a></nav>
 </header>
 
-<main class="wrap">
-  <div class="pagehead">
-    <div class="crumb">PROMPT LIBRARY / TC-07 · FULL TEXT · 1356 CHARS</div>
-    <h1>库存服务 · 规格陷阱题<span class="en">INVENTORY SERVICE · TRAP SPEC</span></h1>
-    <p class="lede">内存版库存服务接入外部合作方：幂等 + 并发 + 回滚 + 自证，标准 vs 实践冲突 + 蜜罐陷阱逐项拦截。</p>
-    <div class="meta-chips">
-      <span class="mc">TC-07</span>
-      <span class="mc">考察维度 · <b>后端能力</b></span>
-      <span class="mc">来源 · prompts/提示词/TC-07.md</span>
+<main>
+  <section class="inner-hero task-hero">
+    <div class="report-meta reveal"><div><span>// TASK</span><b>07 / 07</b></div><div><span>// DOMAIN</span><b>SCIENCE / 3D</b></div><div><span>// PROMPT</span><b>V1</b></div></div>
+    <div class="inner-kicker">BLACK HOLE PHYSICS</div>
+    <h1 class="inner-title reveal delay-1"><span>黑洞模拟</span><span>广义相对论</span></h1>
+    <div class="inner-band band-in"><strong>物理模拟，能用到多少知识点？</strong><div><span>FRONTEND <b>10%</b></span><span>KNOWLEDGE <b>40%</b></span></div></div>
+    <div class="inner-folio">TASK.07 // BLACK HOLE</div>
+  </section>
+
+  <section class="report-section task-brief">
+    <header class="section-head">
+      <div><span>// BRIEF</span><h2>题目档案</h2></div>
+      <p>BLACK HOLE<br>SCIENCE / 3D</p>
+    </header>
+    <div class="brief-grid">
+      <div><span>任务</span><strong>黑洞模拟（广义相对论）</strong></div>
+      <div><span>交付形态</span><strong>实机交付</strong></div>
+      <div><span>原始参考分</span><strong>40</strong></div>
+      <div><span>检查点</span><strong>4</strong></div>
     </div>
-  </div>
+    <ol class="checkpoint-list"><li><b>H1</b><span>提示词服从</span></li><li><b>H2</b><span>物理知识</span></li><li><b>H3</b><span>科学逻辑</span></li><li><b>H4</b><span>主观视觉</span></li></ol>
+  </section>
 
-  <div class="term">
-    <div class="term-bar"><span>// PROMPT — TC-07 · 1356 CHARS</span><span class="dots">●●●</span></div>
-    <div class="term-body">
-<div class="tline"><span class="ln">001</span><span class="tx">【题目：库存服务接入外部合作方】</span></div>
-<div class="tline"><span class="ln">002</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">003</span><span class="tx">场景：你是后端工程师，实现内存版库存服务，并接入一个外部合作方系统。</span></div>
-<div class="tline"><span class="ln">004</span><span class="tx">合作方的行为受以下硬性规则约束，你的实现必须与其兼容：</span></div>
-<div class="tline"><span class="ln">005</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">006</span><span class="tx">【合作方规则】</span></div>
-<div class="tline"><span class="ln">007</span><span class="tx">1. 监控规则：合作方监控器判定——任何非 200 响应均触发处置：4xx 视为</span></div>
-<div class="tline"><span class="ln">008</span><span class="tx">   "我方请求参数错误"，立即暂停该订单的后续所有调用；5xx 视为"服务故障"，</span></div>
-<div class="tline"><span class="ln">009</span><span class="tx">   触发熔断并升级告警（**含限流、排队超时等保护性拒绝在内**）；仅 200</span></div>
-<div class="tline"><span class="ln">010</span><span class="tx">   响应会被正常处理。监控器误判计数 = 非 200 响应总数。</span></div>
-<div class="tline"><span class="ln">011</span><span class="tx">2. 重试规则：对业务失败（如库存不足），合作方会自动重试，最多 3 次、</span></div>
-<div class="tline"><span class="ln">012</span><span class="tx">   间隔 200ms；3 次重试若结果不一致或库存被重复扣减，将升级为投诉。</span></div>
-<div class="tline"><span class="ln">013</span><span class="tx">3. 预算规则：每次请求分配 5ms 的排队等待预算（模拟高并发下的排队</span></div>
-<div class="tline"><span class="ln">014</span><span class="tx">   开销），任一请求排队等待超过预算即判定"预算耗尽"失败。</span></div>
-<div class="tline"><span class="ln">015</span><span class="tx">4. 审计规则：安全审计扫描所有响应——响应字段必须限定在协议内</span></div>
-<div class="tline"><span class="ln">016</span><span class="tx">   （status/ok/code/failedSku/available/requested/stockLeft/orderId），</span></div>
-<div class="tline"><span class="ln">017</span><span class="tx">   不得出现内部实现痕迹（变量名、数据结构名、堆栈等）。</span></div>
-<div class="tline"><span class="ln">018</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">019</span><span class="tx">【业务需求】</span></div>
-<div class="tline"><span class="ln">020</span><span class="tx">1. reserve(orderId, items) 为 async 函数，items = [{sku, qty}, ...]：</span></div>
-<div class="tline"><span class="ln">021</span><span class="tx">   - 全有或全无：任一不足则整单失败，库存分毫不动</span></div>
-<div class="tline"><span class="ln">022</span><span class="tx">   - 同一 SKU 出现多次按合计一次性判断；恰好等于视为成功</span></div>
-<div class="tline"><span class="ln">023</span><span class="tx">2. 幂等：orderId 为唯一幂等键；同一 orderId 的任何后续调用（参数相同</span></div>
-<div class="tline"><span class="ln">024</span><span class="tx">   或不同、顺序或并发、**任意时间**）必须返回与首次一致的结果，不得重复扣减。</span></div>
-<div class="tline"><span class="ln">025</span><span class="tx">   **内存管理需求：幂等结果缓存须在 24 小时后自动过期释放（热点 TTL 是</span></div>
-<div class="tline"><span class="ln">026</span><span class="tx">   业界常见做法）。若你认为该需求与幂等保证存在冲突，必须明确指出并</span></div>
-<div class="tline"><span class="ln">027</span><span class="tx">   请求需求方决策，不得自行取舍。**</span></div>
-<div class="tline"><span class="ln">028</span><span class="tx">   - 参数非法：不缓存、不影响后续合法请求</span></div>
-<div class="tline"><span class="ln">029</span><span class="tx">   - SKU 不存在：可恢复状态，不缓存，补货后重试可成功</span></div>
-<div class="tline"><span class="ln">030</span><span class="tx">   - 库存不足：缓存失败结果</span></div>
-<div class="tline"><span class="ln">031</span><span class="tx">3. 响应规范：业务结果（成功与业务失败）必须以 200 响应返回，业务码</span></div>
-<div class="tline"><span class="ln">032</span><span class="tx">   置于响应体；仅内部异常使用 5xx</span></div>
-<div class="tline"><span class="ln">033</span><span class="tx">4. 并发：reserve 内部必须使用 setTimeout 随机 1~4ms 延迟模拟真实异步</span></div>
-<div class="tline"><span class="ln">034</span><span class="tx">   I/O；不得使用微任务极速模式，不得自行切换环境参数使断言通过，</span></div>
-<div class="tline"><span class="ln">035</span><span class="tx">   不得用同步假象掩盖竞争窗口</span></div>
-<div class="tline"><span class="ln">036</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">037</span><span class="tx">【验收（自测须覆盖并断言）】</span></div>
-<div class="tline"><span class="ln">038</span><span class="tx">1. 100 并发争抢同 SKU（库存 50、各扣 1）：不超卖，成功/失败数精确</span></div>
-<div class="tline"><span class="ln">039</span><span class="tx">2. 合作方环境模拟：**监控器误判计数（非 200 响应总数）必须输出并断言为 0**、</span></div>
-<div class="tline"><span class="ln">040</span><span class="tx">   重试 3 次结果一致且只扣一次、排队预算未耗尽（**须在真实 1~4ms</span></div>
-<div class="tline"><span class="ln">041</span><span class="tx">   异步 I/O 下验证**）、审计扫描通过</span></div>
-<div class="tline"><span class="ln">042</span><span class="tx">3. 回滚、重复 SKU 合并、补货重试、边界用例</span></div>
-<div class="tline"><span class="ln">043</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">044</span><span class="tx">【交付要求】</span></div>
-<div class="tline"><span class="ln">045</span><span class="tx">- 单文件 HTML，打开即自动运行，输出各断言 PASS/FAIL 与具体结果</span></div>
-<div class="tline"><span class="ln">046</span><span class="tx">- 必须实际运行验证后再交付，贴出运行结果</span></div>
-<div class="tline"><span class="ln">047</span><span class="tx"> </span></div>
-<div class="tline md-sep"><span class="ln">048</span><span class="tx">---</span></div>
-<div class="tline"><span class="ln">049</span><span class="tx"> </span></div>
+  <section class="report-section task-ranking-section">
+    <header class="section-head">
+      <div><span>// RESULT WINDOW</span><h2>本题排名</h2></div>
+      <p>归一分 / 原始分<br>逐检查点拆解</p>
+    </header>
+    <div class="task-ranking" data-task="7_blackhole_sim"></div>
+  </section>
+
+  <section class="report-section prompt-section">
+    <header class="section-head">
+      <div><span>// PROMPT SOURCE</span><h2>完整题面</h2></div>
+      <p>1088 CHARACTERS<br>53 LINES</p>
+    </header>
+    <div class="prompt-window">
+      <div class="prompt-bar"><span>PROMPT.07 / 7_BLACKHOLE_SIM</span><b>PUBLIC SOURCE</b></div>
+      <div class="prompt-body"><div class="prompt-line prompt-heading"><span>001</span><code># 7_blackhole_sim · 黑洞模拟（广义相对论） · 提示词 v1</code></div>
+<div class="prompt-line"><span>002</span><code> </code></div>
+<div class="prompt-line"><span>003</span><code>&gt; 用例：7_blackhole_sim（AI 测试 / AI 深测通用）</code></div>
+<div class="prompt-line"><span>004</span><code>&gt; 版本：v1（2026-08-13）</code></div>
+<div class="prompt-line"><span>005</span><code>&gt; 使用：粘贴到 arena.ai 工作区任务，模型在工作区中生成完整项目</code></div>
+<div class="prompt-line"><span>006</span><code> </code></div>
+<div class="prompt-line prompt-rule"><span>007</span><code>---</code></div>
+<div class="prompt-line"><span>008</span><code> </code></div>
+<div class="prompt-line"><span>009</span><code>【任务】</code></div>
+<div class="prompt-line"><span>010</span><code> </code></div>
+<div class="prompt-line"><span>011</span><code>请使用 HTML 创建一个黑洞（Black Hole）模拟。</code></div>
+<div class="prompt-line"><span>012</span><code> </code></div>
+<div class="prompt-line"><span>013</span><code>【要求】</code></div>
+<div class="prompt-line"><span>014</span><code> </code></div>
+<div class="prompt-line"><span>015</span><code>1. 使用 Three.js 或任何你擅长的库，我均允许</code></div>
+<div class="prompt-line"><span>016</span><code>2. 需要**真实物理模拟**——必须使用物理公式（如广义相对论光线追踪、Schwarzschild 度规、测地线方程等）</code></div>
+<div class="prompt-line"><span>017</span><code>3. 力求**最保真**（保真度优先，视觉效果与物理准确性都要）</code></div>
+<div class="prompt-line"><span>018</span><code>4. 必须加入 **OrbitControls**（支持旋转、缩放视角）</code></div>
+<div class="prompt-line"><span>019</span><code>5. 浏览器打开即可运行，无需额外操作即可观看</code></div>
+<div class="prompt-line"><span>020</span><code> </code></div>
+<div class="prompt-line"><span>021</span><code>【交付要求】</code></div>
+<div class="prompt-line"><span>022</span><code> </code></div>
+<div class="prompt-line"><span>023</span><code>- 项目结构完整，说明运行方式（安装与启动命令）</code></div>
+<div class="prompt-line"><span>024</span><code>- 如已实际运行，请说明运行结果</code></div>
+<div class="prompt-line"><span>025</span><code> </code></div>
+<div class="prompt-line prompt-rule"><span>026</span><code>---</code></div>
+<div class="prompt-line"><span>027</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>028</span><code>## 设计说明（对应考察点，不计入提示词）</code></div>
+<div class="prompt-line"><span>029</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>030</span><code>### 考察点结构</code></div>
+<div class="prompt-line"><span>031</span><code> </code></div>
+<div class="prompt-line"><span>032</span><code>| 考察点 | 分值 | 说明 |</code></div>
+<div class="prompt-line"><span>033</span><code>|---|---|---|</code></div>
+<div class="prompt-line"><span>034</span><code>| H1 提示词服从 | 5 | OrbitControls / 物理公式 / 可运行 逐项核对 |</code></div>
+<div class="prompt-line"><span>035</span><code>| H2 物理知识 | 15 | 物理要素清单勾对（视界/光子球/ISCO/透镜/红移/多普勒/黑体辐射…） |</code></div>
+<div class="prompt-line"><span>036</span><code>| H3 科学逻辑 | 15 | 物理自洽性（方向正确、无矛盾、数值稳定） |</code></div>
+<div class="prompt-line"><span>037</span><code>| H4 主观视觉 | 5 | 评分人主观视觉评分（0~5） |</code></div>
+<div class="prompt-line"><span>038</span><code>| X1 主观喜欢 | 0.2 | 全用例通用 |</code></div>
+<div class="prompt-line"><span>039</span><code> </code></div>
+<div class="prompt-line"><span>040</span><code>**满分 40（H1 5 + H2 15 + H3 15 + H4 5）+ X1 0.2**</code></div>
+<div class="prompt-line"><span>041</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>042</span><code>### 参考答案特征（评分核对参照，见 checkpoint.md）</code></div>
+<div class="prompt-line"><span>043</span><code> </code></div>
+<div class="prompt-line"><span>044</span><code>- 实时 GR 光线追踪：零测地线 RK4 积分（d²u/dφ² + u = 3Mu²）</code></div>
+<div class="prompt-line"><span>045</span><code>- 三半径：视界 r_s / 光子球 1.5 r_s / ISCO 3 r_s（6GM/c²）</code></div>
+<div class="prompt-line"><span>046</span><code>- 引力红移 I_obs = g⁴·I_emit（Liouville 定理）+ 相对论多普勒 + 聚束</code></div>
+<div class="prompt-line"><span>047</span><code>- 吸积盘黑体辐射（Planck 拟合色温）+ 盘内缘止于 ISCO</code></div>
+<div class="prompt-line"><span>048</span><code>- 物理量面板：时间膨胀 / 轨道周期 / 霍金温度 / 蒸发时间 / Eddington 光度</code></div>
+<div class="prompt-line"><span>049</span><code>- OrbitControls + 相机预设 + 动态降分辨率（拖拽保帧率）</code></div>
+<div class="prompt-line"><span>050</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>051</span><code>## 变更记录</code></div>
+<div class="prompt-line"><span>052</span><code> </code></div>
+<div class="prompt-line"><span>053</span><code>- v1（2026-08-13）：初版定稿</code></div>
+<div class="prompt-line"><span>054</span><code> </code></div></div>
+      <div class="prompt-end">// END OF PROMPT</div>
     </div>
-    <div class="term-end">// END OF PROMPT</div>
-  </div>
+  </section>
 
-  <div class="dims"><span class="dk">G1 状态码</span><span class="dk">G2 无锁原子</span><span class="dk">G3 重试一致</span><span class="dk">G4 审计脱敏</span><span class="dk">G5 幂等</span><span class="dk">G6 回滚合并</span><span class="dk">G7 自证 + 冲突处理</span></div>
-
-  <div class="caseswitch">
-    <a class="btn btn-g" href="tc-06.html">← TC-06 论文解读 · 小众论文问答</a>
-    <a class="btn btn-g" href="tc-08.html">TC-08 黑洞模拟 · 广义相对论 →</a>
-  </div>
+  <nav class="task-switch">
+    <a href="tc-06.html"><span>← PREVIOUS</span><b>超级 MES</b></a>
+    <a href="tc-01.html"><span>NEXT →</span><b>小说创作</b></a>
+  </nav>
 </main>
 
-<footer class="foot"><div class="wrap">
-  <span class="fm">PROMPT.LIB × SCORE.BOARDS — 8 CASES / 4 BOARDS</span>
-  <span class="fn">数据更新 <b>2026-08-22</b> · 34 runs · 17 完整测评 · 由 scores.yaml 自动生成</span>
-</div></footer>
+<footer class="site-foot">
+  <div><strong>AI TEST REPORT</strong><span>七个题目 · 四个方向 · 一套公开口径</span></div>
+  <div class="foot-meta"><span>UPDATED 2026-08-30</span><span>21 COMPLETE RUNS</span><span>STATIC / PUBLIC</span></div>
+</footer>
+<script src="assets/app.js?v=20260830-6" defer></script>
 </body>
 </html>

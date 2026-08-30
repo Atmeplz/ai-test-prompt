@@ -1,70 +1,137 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TC-06 · 论文解读 · 小众论文问答 — 提示词全库</title>
-<meta name="description" content="TC-06 论文解读 · 小众论文问答 完整提示词 · AI 能力专项测试">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%235b8cff'/%3E%3Cstop offset='1' stop-color='%232fd4b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Crect x='9' y='9' width='14' height='14' rx='4' fill='white'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/style.css">
+<meta name="theme-color" content="#F4F0E6">
+<title>06 超级 MES 史山修复 · AI 能力专项测试</title>
+<meta name="description" content="超级 MES 史山修复的公开题面、检查点与成绩排名。">
+<link rel="stylesheet" href="assets/style.css?v=20260830-6">
 </head>
-<body class="page-case">
-<div class="aurora"><i></i><i></i><i></i><i></i></div>
-<div class="gridlines"></div>
-<header class="topnav">
-  <a class="brand" href="index.html"><span class="logo"></span><span class="bt">AI 能力专项测试</span></a>
-  <nav><a href="index.html">首页</a><a href="board-01.html">总分榜</a><a href="board-02.html">用例榜</a><a href="board-03.html">单项榜</a><a href="board-04.html">六维</a></nav>
+<body class="task-page">
+<div class="blueprint-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<span class="reg-cross cross-tl" aria-hidden="true"></span>
+<span class="reg-cross cross-tr" aria-hidden="true"></span>
+<header class="site-nav">
+  <a class="nav-brand" href="index.html"><i></i><span>AI 能力专项测试<small>CAPABILITY BENCHMARK</small></span></a>
+  <nav><a href="index.html"><span>INDEX</span><b>首页</b></a><a href="board-01.html"><span>TOTAL</span><b>总榜</b></a><a href="board-04.html"><span>DIRECTIONS</span><b>方向</b></a><a href="board-02.html"><span>TASKS</span><b>题目</b></a><a href="board-03.html"><span>POINTS</span><b>检查点</b></a></nav>
 </header>
 
-<main class="wrap">
-  <div class="pagehead">
-    <div class="crumb">PROMPT LIBRARY / TC-06 · FULL TEXT · 371 CHARS</div>
-    <h1>论文解读 · 小众论文问答<span class="en">PAPER READING · Q&amp;A</span></h1>
-    <p class="lede">阅读随附的小众科学论文（PDF），解答 3 个问题（每答 ≤1000 字）——考察 PDF 解析、要点提取与幻觉抑制。</p>
-    <div class="meta-chips">
-      <span class="mc">TC-06</span>
-      <span class="mc">考察维度 · <b>文本理解与信息提取</b></span>
-      <span class="mc">来源 · prompts/提示词/TC-06.md</span>
+<main>
+  <section class="inner-hero task-hero">
+    <div class="report-meta reveal"><div><span>// TASK</span><b>06 / 07</b></div><div><span>// DOMAIN</span><b>BACKEND / SPEC</b></div><div><span>// PROMPT</span><b>V1</b></div></div>
+    <div class="inner-kicker">SPEC TRAP TEST</div>
+    <h1 class="inner-title reveal delay-1"><span>后端史山</span><span>答复与判分</span></h1>
+    <div class="inner-band band-in"><strong>修十处史山，还敢虚报吗？</strong><div><span>BACKEND <b>100%</b></span></div></div>
+    <div class="inner-folio">TASK.06 // SUPER MES</div>
+  </section>
+
+  <section class="report-section task-brief">
+    <header class="section-head">
+      <div><span>// BRIEF</span><h2>题目档案</h2></div>
+      <p>SUPER MES<br>BACKEND / SPEC</p>
+    </header>
+    <div class="brief-grid">
+      <div><span>任务</span><strong>超级 MES 史山修复</strong></div>
+      <div><span>交付形态</span><strong>文本 / 摘录</strong></div>
+      <div><span>原始参考分</span><strong>100</strong></div>
+      <div><span>检查点</span><strong>1</strong></div>
     </div>
-  </div>
+    <ol class="checkpoint-list"><li><b>FIT</b><span>总分对照</span></li></ol>
+  </section>
 
-  <div class="term">
-    <div class="term-bar"><span>// PROMPT — TC-06 · 371 CHARS</span><span class="dots">●●●</span></div>
-    <div class="term-body">
-<div class="tline"><span class="ln">001</span><span class="tx">【任务】</span></div>
-<div class="tline"><span class="ln">002</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">003</span><span class="tx">请阅读随附的科学论文（PDF 文件），并解答以下 3 个问题。每个问题的解答字数限制在 1000 字以内，3 个问题一次性输出。</span></div>
-<div class="tline"><span class="ln">004</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">005</span><span class="tx">【问题】</span></div>
-<div class="tline"><span class="ln">006</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">007</span><span class="tx">1. 在处理大规模语料（如 500 万文档的 HotPotQA）时，为什么论文更推荐使用稀疏编码器索引而非稠密向量索引？</span></div>
-<div class="tline"><span class="ln">008</span><span class="tx">2. 为什么混合查询（如 Best Fields）在 CoQA 数据集上相比基础查询（Match Query）没有取得准确率提升？</span></div>
-<div class="tline"><span class="ln">009</span><span class="tx">3. 论文中提出的多字段混合查询（Multi-match Queries）包含哪四种分类？各自的检索侧重点是什么？</span></div>
-<div class="tline"><span class="ln">010</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">011</span><span class="tx">【要求】</span></div>
-<div class="tline"><span class="ln">012</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">013</span><span class="tx">1. 每个解答字数 ≤1000 字（超出扣分）</span></div>
-<div class="tline"><span class="ln">014</span><span class="tx">2. 答案必须基于论文内容，不得编造论文中不存在的信息</span></div>
-<div class="tline"><span class="ln">015</span><span class="tx">3. 按 1/2/3 编号输出，一次性给出全部解答</span></div>
-<div class="tline"><span class="ln">016</span><span class="tx">4. 只输出解答内容，不要任何说明</span></div>
-<div class="tline"><span class="ln">017</span><span class="tx"> </span></div>
-<div class="tline md-sep"><span class="ln">018</span><span class="tx">---</span></div>
-<div class="tline"><span class="ln">019</span><span class="tx"> </span></div>
+  <section class="report-section task-ranking-section">
+    <header class="section-head">
+      <div><span>// RESULT WINDOW</span><h2>本题排名</h2></div>
+      <p>归一分 / 原始分<br>逐检查点拆解</p>
+    </header>
+    <div class="task-ranking" data-task="6_backend_mes"></div>
+  </section>
+
+  <section class="report-section prompt-section">
+    <header class="section-head">
+      <div><span>// PROMPT SOURCE</span><h2>完整题面</h2></div>
+      <p>1169 CHARACTERS<br>62 LINES</p>
+    </header>
+    <div class="prompt-window">
+      <div class="prompt-bar"><span>PROMPT.06 / 6_BACKEND_MES</span><b>PUBLIC SOURCE</b></div>
+      <div class="prompt-body"><div class="prompt-line prompt-heading"><span>001</span><code># backend-test</code></div>
+<div class="prompt-line"><span>002</span><code> </code></div>
+<div class="prompt-line"><span>003</span><code>一套正在生产环境跑的制造质检系统（MES）的后端。功能都齐、公开测试全绿，</code></div>
+<div class="prompt-line"><span>004</span><code>但最近现场陆续报来一批&quot;说不清但确实不对&quot;的问题。请你作为接手的后端工程师，</code></div>
+<div class="prompt-line"><span>005</span><code>定位并修复它们。</code></div>
+<div class="prompt-line"><span>006</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>007</span><code>## 环境与运行</code></div>
+<div class="prompt-line"><span>008</span><code> </code></div>
+<div class="prompt-line"><span>009</span><code>- Node.js ≥ 22.5.0（用到内置 `node:sqlite` / `node:test`，零第三方依赖）。</code></div>
+<div class="prompt-line"><span>010</span><code>- 安装：无需安装依赖。</code></div>
+<div class="prompt-line"><span>011</span><code> </code></div>
+<div class="prompt-line"><span>012</span><code>下面这些问题都发生在更真实的场景里（多人同时干活、跨单位、单据流转、盘点月结等）。</code></div>
+<div class="prompt-line"><span>013</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>014</span><code>## 你的任务</code></div>
+<div class="prompt-line"><span>015</span><code> </code></div>
+<div class="prompt-line"><span>016</span><code>修复下列现场报障。</code></div>
+<div class="prompt-line"><span>017</span><code> </code></div>
+<div class="prompt-line prompt-rule"><span>018</span><code>---</code></div>
+<div class="prompt-line"><span>019</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>020</span><code>## 现场报障</code></div>
+<div class="prompt-line"><span>021</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>022</span><code>### 现象一 · 明明有货，系统说不够料</code></div>
+<div class="prompt-line"><span>023</span><code> </code></div>
+<div class="prompt-line"><span>024</span><code>仓库反映：领料时系统总说&quot;库存不够&quot;，可货架上明明有货。比如台账记了 2 千克的货、</code></div>
+<div class="prompt-line"><span>025</span><code>需求单填 1.2 千克，系统有时候会判不够、领料单发不出去，有时候又能发得出去。</code></div>
+<div class="prompt-line"><span>026</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>027</span><code>### 现象二 · 模板改了版，老单子内容反而跟着变</code></div>
+<div class="prompt-line"><span>028</span><code> </code></div>
+<div class="prompt-line"><span>029</span><code>工艺模板升了新版，维护界面看也是新版。可**新建**的批次套出来还是旧内容；</code></div>
+<div class="prompt-line"><span>030</span><code>更奇怪的是有些**早就建好**的老批次，内容反而跟着新版变了。</code></div>
+<div class="prompt-line"><span>031</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>032</span><code>### 现象三 · 主单的资料跑到子单名下</code></div>
+<div class="prompt-line"><span>033</span><code> </code></div>
+<div class="prompt-line"><span>034</span><code>主单上传的图纸、工艺卡，会出现在它下属批次（子单）的资料列表里，还被标成是</code></div>
+<div class="prompt-line"><span>035</span><code>**子单自己的**。财务按资料归属出归档清单时对不上数——一份主单的图纸被算成了子单的。</code></div>
+<div class="prompt-line"><span>036</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>037</span><code>### 现象四 · 两张单共用一道工序，报工记录乱套</code></div>
+<div class="prompt-line"><span>038</span><code> </code></div>
+<div class="prompt-line"><span>039</span><code>热处理是几张单共用的工序。忙时几个人同时用手持机报工，事后发现：有的记录</code></div>
+<div class="prompt-line"><span>040</span><code>**跑到别的单上**去了，有的**多出来一模一样的一条**，还有**执行记录列表和这张单的</code></div>
+<div class="prompt-line"><span>041</span><code>汇总数字对不上**。不忙的时候主观感觉很慢。</code></div>
+<div class="prompt-line"><span>042</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>043</span><code>### 现象五 · 盘点做完，三个地方的数字对不上</code></div>
+<div class="prompt-line"><span>044</span><code> </code></div>
+<div class="prompt-line"><span>045</span><code>盘点走完复核、审定、对账后，同一个物料能看出三个数：**台账余额、复核录入的实盘数</code></div>
+<div class="prompt-line"><span>046</span><code>（换算过来）、对账汇总页**三边打架。此外海外仓按&quot;克&quot;复核、本部台账按&quot;千克&quot;记；</code></div>
+<div class="prompt-line"><span>047</span><code>几个人同时复核同一张盘点单时，还出现过**有人录的数不见了、数对上了名字却记成别人**。</code></div>
+<div class="prompt-line"><span>048</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>049</span><code>### 现象六 · 会签走乱：有的卡住、作废了还能往下走</code></div>
+<div class="prompt-line"><span>050</span><code> </code></div>
+<div class="prompt-line"><span>051</span><code>单据要走四段会签（初审 → 中间两段并行 → 终审），中间能驳回重走、也能整单作废。</code></div>
+<div class="prompt-line"><span>052</span><code>最近出现：并行两段几个人同时点，结果有的单**终审莫名批过了**，</code></div>
+<div class="prompt-line"><span>053</span><code>也有**两段都批了却卡在终审**；被**驳回重走**的单只重批了初审就被当成&quot;全批完&quot;；</code></div>
+<div class="prompt-line"><span>054</span><code>**整单作废**的单**还能继续走**；**看板显示的段位跟实际对不上**。</code></div>
+<div class="prompt-line"><span>055</span><code> </code></div>
+<div class="prompt-line prompt-rule"><span>056</span><code>---</code></div>
+<div class="prompt-line"><span>057</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>058</span><code>## 提示</code></div>
+<div class="prompt-line"><span>059</span><code> </code></div>
+<div class="prompt-line"><span>060</span><code>- 报障人是运营、仓库、财务、车间班组长，可能缺乏专业素养。</code></div>
+<div class="prompt-line"><span>061</span><code>- &quot;一个人顺序操作从不出错、多人/跨单位/流转时才出错&quot;是很强的线索。</code></div>
+<div class="prompt-line"><span>062</span><code>- 仓库里其它随手写的说明文档不一定是最新的。</code></div>
+<div class="prompt-line"><span>063</span><code> </code></div></div>
+      <div class="prompt-end">// END OF PROMPT</div>
     </div>
-    <div class="term-end">// END OF PROMPT</div>
-  </div>
+  </section>
 
-  <div class="dims"><span class="dk">F1~F3 知识点覆盖</span><span class="dk">F4 语风分析</span></div>
-
-  <div class="caseswitch">
-    <a class="btn btn-g" href="tc-05.html">← TC-05 公文理解提炼</a>
-    <a class="btn btn-g" href="tc-07.html">TC-07 库存服务 · 规格陷阱题 →</a>
-  </div>
+  <nav class="task-switch">
+    <a href="tc-05.html"><span>← PREVIOUS</span><b>前端网页</b></a>
+    <a href="tc-07.html"><span>NEXT →</span><b>黑洞模拟</b></a>
+  </nav>
 </main>
 
-<footer class="foot"><div class="wrap">
-  <span class="fm">PROMPT.LIB × SCORE.BOARDS — 8 CASES / 4 BOARDS</span>
-  <span class="fn">数据更新 <b>2026-08-22</b> · 34 runs · 17 完整测评 · 由 scores.yaml 自动生成</span>
-</div></footer>
+<footer class="site-foot">
+  <div><strong>AI TEST REPORT</strong><span>七个题目 · 四个方向 · 一套公开口径</span></div>
+  <div class="foot-meta"><span>UPDATED 2026-08-30</span><span>21 COMPLETE RUNS</span><span>STATIC / PUBLIC</span></div>
+</footer>
+<script src="assets/app.js?v=20260830-6" defer></script>
 </body>
 </html>

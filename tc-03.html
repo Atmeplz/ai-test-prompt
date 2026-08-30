@@ -1,81 +1,135 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TC-03 · 前端落地页 · 户外机能风 — 提示词全库</title>
-<meta name="description" content="TC-03 前端落地页 · 户外机能风 完整提示词 · AI 能力专项测试">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%235b8cff'/%3E%3Cstop offset='1' stop-color='%232fd4b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Crect x='9' y='9' width='14' height='14' rx='4' fill='white'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/style.css">
+<meta name="theme-color" content="#F4F0E6">
+<title>03 3D 体素中国建筑群 · AI 能力专项测试</title>
+<meta name="description" content="3D 体素中国建筑群的公开题面、检查点与成绩排名。">
+<link rel="stylesheet" href="assets/style.css?v=20260830-6">
 </head>
-<body class="page-case">
-<div class="aurora"><i></i><i></i><i></i><i></i></div>
-<div class="gridlines"></div>
-<header class="topnav">
-  <a class="brand" href="index.html"><span class="logo"></span><span class="bt">AI 能力专项测试</span></a>
-  <nav><a href="index.html">首页</a><a href="board-01.html">总分榜</a><a href="board-02.html">用例榜</a><a href="board-03.html">单项榜</a><a href="board-04.html">六维</a></nav>
+<body class="task-page">
+<div class="blueprint-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<span class="reg-cross cross-tl" aria-hidden="true"></span>
+<span class="reg-cross cross-tr" aria-hidden="true"></span>
+<header class="site-nav">
+  <a class="nav-brand" href="index.html"><i></i><span>AI 能力专项测试<small>CAPABILITY BENCHMARK</small></span></a>
+  <nav><a href="index.html"><span>INDEX</span><b>首页</b></a><a href="board-01.html"><span>TOTAL</span><b>总榜</b></a><a href="board-04.html"><span>DIRECTIONS</span><b>方向</b></a><a href="board-02.html"><span>TASKS</span><b>题目</b></a><a href="board-03.html"><span>POINTS</span><b>检查点</b></a></nav>
 </header>
 
-<main class="wrap">
-  <div class="pagehead">
-    <div class="crumb">PROMPT LIBRARY / TC-03 · FULL TEXT · 510 CHARS</div>
-    <h1>前端落地页 · 户外机能风<span class="en">LANDING PAGE · OUTDOOR GEAR</span></h1>
-    <p class="lede">不给风格约束的商业落地页：由模型自主设计一套自洽、有辨识度的视觉方案。</p>
-    <div class="meta-chips">
-      <span class="mc">TC-03</span>
-      <span class="mc">考察维度 · <b>视觉与交互设计</b></span>
-      <span class="mc">来源 · prompts/提示词/TC-03.md</span>
+<main>
+  <section class="inner-hero task-hero">
+    <div class="report-meta reveal"><div><span>// TASK</span><b>03 / 07</b></div><div><span>// DOMAIN</span><b>FRONTEND / 3D</b></div><div><span>// PROMPT</span><b>V1</b></div></div>
+    <div class="inner-kicker">SPATIAL MODELING</div>
+    <h1 class="inner-title reveal delay-1"><span>3D 体素</span><span>中国建筑群</span></h1>
+    <div class="inner-band band-in"><strong>中式 vs 日式，一字之差</strong><div><span>FRONTEND <b>25%</b></span></div></div>
+    <div class="inner-folio">TASK.03 // VOXEL ARCHITECTURE</div>
+  </section>
+
+  <section class="report-section task-brief">
+    <header class="section-head">
+      <div><span>// BRIEF</span><h2>题目档案</h2></div>
+      <p>VOXEL ARCHITECTURE<br>FRONTEND / 3D</p>
+    </header>
+    <div class="brief-grid">
+      <div><span>任务</span><strong>3D 体素中国建筑群</strong></div>
+      <div><span>交付形态</span><strong>实机交付</strong></div>
+      <div><span>原始参考分</span><strong>60</strong></div>
+      <div><span>检查点</span><strong>4</strong></div>
     </div>
-  </div>
+    <ol class="checkpoint-list"><li><b>A1</b><span>空间想象</span></li><li><b>A3</b><span>事实准确</span></li><li><b>A4</b><span>主次叙事</span></li><li><b>A5</b><span>光影氛围</span></li></ol>
+  </section>
 
-  <div class="term">
-    <div class="term-bar"><span>// PROMPT — TC-03 · 510 CHARS</span><span class="dots">●●●</span></div>
-    <div class="term-body">
-<div class="tline"><span class="ln">001</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">002</span><span class="tx">【任务】</span></div>
-<div class="tline"><span class="ln">003</span><span class="tx">请设计并实现一个前端落地页：一个户外机能风运动装备品牌的产品展示页。</span></div>
-<div class="tline"><span class="ln">004</span><span class="tx">品牌定位强调：高质量、高耐用度、高实用性。</span></div>
-<div class="tline"><span class="ln">005</span><span class="tx">这是真实的商业场景页面，请把它当作要上线使用的产品来做。</span></div>
-<div class="tline"><span class="ln">006</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">007</span><span class="tx">【功能要求】</span></div>
-<div class="tline"><span class="ln">008</span><span class="tx">1. 页面结构完整，包含：品牌头部导航、核心卖点区（Hero）、</span></div>
-<div class="tline"><span class="ln">009</span><span class="tx">   产品展示区（至少 4 款产品）、品牌故事区、预订入口、页脚</span></div>
-<div class="tline"><span class="ln">010</span><span class="tx">2. 产品展示区每款产品包含：名称、简介、价格、图片</span></div>
-<div class="tline"><span class="ln">011</span><span class="tx">   （可用占位图或图形绘制）</span></div>
-<div class="tline"><span class="ln">012</span><span class="tx">3. 预订入口有明确交互（表单或按钮流程），操作有反馈</span></div>
-<div class="tline"><span class="ln">013</span><span class="tx">4. 适配桌面与移动端（不同屏幕宽度下布局不崩坏）</span></div>
-<div class="tline"><span class="ln">014</span><span class="tx">5. 交互细节：悬停、过渡动画等酌情完善</span></div>
-<div class="tline"><span class="ln">015</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">016</span><span class="tx">【视觉要求】</span></div>
-<div class="tline"><span class="ln">017</span><span class="tx">- 不指定风格，由你根据品牌调性自主设计一套完整、统一、有辨识度的</span></div>
-<div class="tline"><span class="ln">018</span><span class="tx">  视觉方案</span></div>
-<div class="tline"><span class="ln">019</span><span class="tx">- 视觉方案须自洽：配色、字体、布局风格前后一致</span></div>
-<div class="tline"><span class="ln">020</span><span class="tx">- 视觉表达需呼应品牌定位（高质量、高耐用度、高实用性）</span></div>
-<div class="tline"><span class="ln">021</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">022</span><span class="tx">【技术要求】</span></div>
-<div class="tline"><span class="ln">023</span><span class="tx">- 工作区完整项目（Vite + React 或原生均可），可直接构建运行</span></div>
-<div class="tline"><span class="ln">024</span><span class="tx">- 页面打开即可正常浏览，无报错</span></div>
-<div class="tline"><span class="ln">025</span><span class="tx">- 代码结构清晰（组件划分、状态管理合理）</span></div>
-<div class="tline"><span class="ln">026</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">027</span><span class="tx">【交付要求】</span></div>
-<div class="tline"><span class="ln">028</span><span class="tx">- 项目结构完整，说明运行方式；如已实际运行，请说明结果</span></div>
-<div class="tline"><span class="ln">029</span><span class="tx"> </span></div>
-<div class="tline"><span class="ln">030</span><span class="tx"> </span></div>
+  <section class="report-section task-ranking-section">
+    <header class="section-head">
+      <div><span>// RESULT WINDOW</span><h2>本题排名</h2></div>
+      <p>归一分 / 原始分<br>逐检查点拆解</p>
+    </header>
+    <div class="task-ranking" data-task="3_chinese_architecture"></div>
+  </section>
+
+  <section class="report-section prompt-section">
+    <header class="section-head">
+      <div><span>// PROMPT SOURCE</span><h2>完整题面</h2></div>
+      <p>1194 CHARACTERS<br>60 LINES</p>
+    </header>
+    <div class="prompt-window">
+      <div class="prompt-bar"><span>PROMPT.03 / 3_CHINESE_ARCHITECTURE</span><b>PUBLIC SOURCE</b></div>
+      <div class="prompt-body"><div class="prompt-line prompt-heading"><span>001</span><code># 3_chinese_architecture · 3D 体素中国建筑群 · 提示词 v1</code></div>
+<div class="prompt-line"><span>002</span><code> </code></div>
+<div class="prompt-line"><span>003</span><code>&gt; 用例：3_chinese_architecture（AI 测试 / AI 深测通用）</code></div>
+<div class="prompt-line"><span>004</span><code>&gt; 版本：v1（2026-08-08）</code></div>
+<div class="prompt-line"><span>005</span><code>&gt; 使用：粘贴到 arena.ai 工作区任务，模型在工作区中生成完整项目</code></div>
+<div class="prompt-line"><span>006</span><code> </code></div>
+<div class="prompt-line prompt-rule"><span>007</span><code>---</code></div>
+<div class="prompt-line"><span>008</span><code> </code></div>
+<div class="prompt-line"><span>009</span><code>【任务】</code></div>
+<div class="prompt-line"><span>010</span><code>请创建一个可运行的 3D 体素（Voxel）风格中国古典建筑群场景，用 Three.js 实现，</code></div>
+<div class="prompt-line"><span>011</span><code>浏览器打开即可观看，风格类似 Minecraft 体素块拼接。</code></div>
+<div class="prompt-line"><span>012</span><code> </code></div>
+<div class="prompt-line"><span>013</span><code>【场景要求】</code></div>
+<div class="prompt-line"><span>014</span><code>1. 建筑群至少 5 座建筑，主次关系明确：</code></div>
+<div class="prompt-line"><span>015</span><code>   - 主殿：体量最大，位于中轴线核心位置</code></div>
+<div class="prompt-line"><span>016</span><code>   - 配殿：对称分布于主殿两侧</code></div>
+<div class="prompt-line"><span>017</span><code>   - 山门：位于场地前端入口</code></div>
+<div class="prompt-line"><span>018</span><code>   - 宝塔或钟鼓楼 1-2 座</code></div>
+<div class="prompt-line"><span>019</span><code>2. 空间布局：</code></div>
+<div class="prompt-line"><span>020</span><code>   - 建筑间距合理（体素比例下足以容纳道路与庭院）</code></div>
+<div class="prompt-line"><span>021</span><code>   - 有明确的道路动线连接：山门 → 庭院 → 主殿</code></div>
+<div class="prompt-line"><span>022</span><code>   - 整体呈中轴对称的院落布局</code></div>
+<div class="prompt-line"><span>023</span><code>3. 建筑风格（中式古典）：</code></div>
+<div class="prompt-line"><span>024</span><code>   - 屋顶：飞檐翘角，含歇山顶/庑殿顶/攒尖顶等中式形制</code></div>
+<div class="prompt-line"><span>025</span><code>   - 结构：斗拱、立柱、台阶</code></div>
+<div class="prompt-line"><span>026</span><code>   - 色彩：红墙、琉璃瓦或青瓦、木色构件</code></div>
+<div class="prompt-line"><span>027</span><code>   - 细节：门窗、灯笼、石狮等酌情添加</code></div>
+<div class="prompt-line"><span>028</span><code>4. 环境与光影：</code></div>
+<div class="prompt-line"><span>029</span><code>   - 地面有铺装/草地处理，建筑与地面自然衔接</code></div>
+<div class="prompt-line"><span>030</span><code>   - 有明确光源与阴影，建筑群呈现光影层次与氛围</code></div>
+<div class="prompt-line"><span>031</span><code>   - 可选：晨昏色调</code></div>
+<div class="prompt-line"><span>032</span><code> </code></div>
+<div class="prompt-line"><span>033</span><code>【技术要求】</code></div>
+<div class="prompt-line"><span>034</span><code>- 使用 Three.js（React 或纯原生均可），无需后端</code></div>
+<div class="prompt-line"><span>035</span><code>- 在工作区中创建完整项目（Vite 等构建工具可用），确保可直接构建运行</code></div>
+<div class="prompt-line"><span>036</span><code>- 画面流畅：体素数量合理，旋转视角时帧率稳定（≥30fps）</code></div>
+<div class="prompt-line"><span>037</span><code>- 页面打开即进入场景，无需操作即可看到全貌</code></div>
+<div class="prompt-line"><span>038</span><code> </code></div>
+<div class="prompt-line"><span>039</span><code>【交付要求】</code></div>
+<div class="prompt-line"><span>040</span><code>- 项目结构完整，说明运行方式（安装与启动命令）</code></div>
+<div class="prompt-line"><span>041</span><code>- 如已实际运行，请说明运行结果</code></div>
+<div class="prompt-line"><span>042</span><code> </code></div>
+<div class="prompt-line prompt-rule"><span>043</span><code>---</code></div>
+<div class="prompt-line"><span>044</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>045</span><code>## 设计说明（对应考察点，不计入提示词）</code></div>
+<div class="prompt-line"><span>046</span><code> </code></div>
+<div class="prompt-line"><span>047</span><code>| 考察点 | 提示词依据 |</code></div>
+<div class="prompt-line"><span>048</span><code>|---|---|</code></div>
+<div class="prompt-line"><span>049</span><code>| A1 空间想象 | 建筑间距合理、道路动线（山门→庭院→主殿） |</code></div>
+<div class="prompt-line"><span>050</span><code>| A2 提示词复现 | 场景要求逐条可核对（建筑数量、对称、动线、光影） |</code></div>
+<div class="prompt-line"><span>051</span><code>| A3 事实准确性 | 仅写&quot;中式古典 + 形制明细&quot;，**不警告日式**，让其自然表现 |</code></div>
+<div class="prompt-line"><span>052</span><code>| A4 主次与叙事 | 主殿居中核心、配殿对称、山门入口、院落布局 |</code></div>
+<div class="prompt-line"><span>053</span><code>| A5 环境融合与光影 | 地面衔接 + 光源阴影 + 晨昏可选 |</code></div>
+<div class="prompt-line"><span>054</span><code>| A6 性能与代码 | 完整项目可构建、≥30fps、打开即见 |</code></div>
+<div class="prompt-line"><span>055</span><code> </code></div>
+<div class="prompt-line"><span>056</span><code>&gt; 考察点命名 2026-08-13 检查点体系升级：原 B3/B5/B6 → A4/A5/A6（评分细则见 `checkpoint.md`）</code></div>
+<div class="prompt-line"><span>057</span><code> </code></div>
+<div class="prompt-line prompt-heading"><span>058</span><code>## 变更记录</code></div>
+<div class="prompt-line"><span>059</span><code> </code></div>
+<div class="prompt-line"><span>060</span><code>- v1（2026-08-08）：初版定稿</code></div>
+<div class="prompt-line"><span>061</span><code> </code></div></div>
+      <div class="prompt-end">// END OF PROMPT</div>
     </div>
-    <div class="term-end">// END OF PROMPT</div>
-  </div>
+  </section>
 
-  <div class="dims"><span class="dk">C1 提示词服从</span><span class="dk">C2 视觉与交互</span><span class="dk">C3 工程完备</span><span class="dk">C4 代码质量</span></div>
-
-  <div class="caseswitch">
-    <a class="btn btn-g" href="tc-02.html">← TC-02 3D 体素自然景观 · 山瀑布穿云</a>
-    <a class="btn btn-g" href="tc-04.html">TC-04 童话改编创作 · 小红帽反套路 →</a>
-  </div>
+  <nav class="task-switch">
+    <a href="tc-02.html"><span>← PREVIOUS</span><b>论文理解</b></a>
+    <a href="tc-04.html"><span>NEXT →</span><b>体素山水</b></a>
+  </nav>
 </main>
 
-<footer class="foot"><div class="wrap">
-  <span class="fm">PROMPT.LIB × SCORE.BOARDS — 8 CASES / 4 BOARDS</span>
-  <span class="fn">数据更新 <b>2026-08-22</b> · 34 runs · 17 完整测评 · 由 scores.yaml 自动生成</span>
-</div></footer>
+<footer class="site-foot">
+  <div><strong>AI TEST REPORT</strong><span>七个题目 · 四个方向 · 一套公开口径</span></div>
+  <div class="foot-meta"><span>UPDATED 2026-08-30</span><span>21 COMPLETE RUNS</span><span>STATIC / PUBLIC</span></div>
+</footer>
+<script src="assets/app.js?v=20260830-6" defer></script>
 </body>
 </html>

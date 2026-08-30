@@ -1,166 +1,97 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>提示词全库 × 评分榜 · AI 能力专项测试</title>
-<meta name="description" content="8 道全栈用例 × 4 张评分榜：同一套检查点体系下的 AI 模型横向实测。">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%235b8cff'/%3E%3Cstop offset='1' stop-color='%232fd4b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Crect x='9' y='9' width='14' height='14' rx='4' fill='white'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/style.css">
+<meta name="theme-color" content="#F4F0E6">
+<title>AI 能力专项测试 · 七题四方向公开榜</title>
+<meta name="description" content="七个真实任务、四个能力方向，同一套检查点体系下的 AI 模型横向实测。">
+<link rel="stylesheet" href="assets/style.css?v=20260830-6">
 </head>
-<body class="page-home">
-<div class="aurora"><i></i><i></i><i></i><i></i></div>
-<div class="gridlines"></div>
-<header class="topnav">
-  <a class="brand" href="index.html"><span class="logo"></span><span class="bt">AI 能力专项测试</span></a>
-  <nav><a href="index.html" class="on">首页</a><a href="board-01.html">总分榜</a><a href="board-02.html">用例榜</a><a href="board-03.html">单项榜</a><a href="board-04.html">六维</a></nav>
+<body class="home-page">
+<div class="blueprint-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<span class="reg-cross cross-tl" aria-hidden="true"></span>
+<span class="reg-cross cross-tr" aria-hidden="true"></span>
+<header class="site-nav">
+  <a class="nav-brand" href="index.html"><i></i><span>AI 能力专项测试<small>CAPABILITY BENCHMARK</small></span></a>
+  <nav><a href="index.html" aria-current="page"><span>INDEX</span><b>首页</b></a><a href="board-01.html"><span>TOTAL</span><b>总榜</b></a><a href="board-04.html"><span>DIRECTIONS</span><b>方向</b></a><a href="board-02.html"><span>TASKS</span><b>题目</b></a><a href="board-03.html"><span>POINTS</span><b>检查点</b></a></nav>
 </header>
 
-<section class="hero">
-  <canvas id="hero3d" aria-hidden="true"></canvas>
-  <div class="hero-inner">
-    <div class="chip rv"><span class="dot"></span>AI 能力专项测试 · CHECKPOINT SUITE 2026</div>
-    <h1 class="rv d1">
-      <span class="en">PROMPT LIBRARY × SCORE BOARDS</span>
-      <span class="gt">提示词全库</span><br>× 评分榜
-    </h1>
-    <p class="lede rv d2">8 道全栈用例 × 4 张评分榜——3D 体素古建、山水瀑布、前端落地页、童话改编、公文提炼、论文问答、后端陷阱规格、黑洞模拟，同一套检查点体系下的横向实测。</p>
-    <div class="cta rv d3">
-      <a class="btn btn-p" href="board-01.html">直达总分榜 <span class="ar">→</span></a>
-      <a class="btn btn-g" href="#cases">浏览八个用例</a>
+<main>
+  <section class="home-hero">
+    <div class="report-meta reveal"><div><span>// REPORT</span><b>AI CAPABILITY TEST</b></div><div><span>// SUITE</span><b>7 TASKS · 4 DIRECTIONS</b></div><div><span>// EDITION</span><b>2026-08-30 / PUBLIC BOARD</b></div></div>
+    <div class="subject-lock" aria-hidden="true"><i></i><b>SUBJECTS<br>BENCHMARKED</b><i></i></div>
+    <h1 class="hero-title reveal delay-1"><span>AI</span><span>能力专项测试</span></h1>
+    <div class="hero-band band-in">
+      <div><strong>七个题目<span>.</span> 四个方向<span>.</span></strong><p>同一套检查点下的模型横向实测</p></div>
+      <a href="board-01.html">查看总榜 <b>→</b></a>
     </div>
-    <div class="stats rv d4">
-      <div class="stat"><b data-stat="runs">34</b><span>RUNS 评测次数</span></div>
-      <div class="stat"><b data-stat="complete">17</b><span>完整八用例</span></div>
-      <div class="stat"><b data-stat="cases">8</b><span>测试用例</span></div>
-      <div class="stat"><b data-stat="updated" style="font-size:15px;line-height:31px">2026-08-22</b><span>最近更新</span></div>
-    </div>
-  </div>
-  <div class="scroll-hint">SCROLL</div>
-</section>
-
-<main class="wrap">
-  <section class="sec">
-    <div class="sec-head">
-      <h2><span class="en">LEADERBOARD PREVIEW</span>总榜速览 · TOP 5</h2>
-      <a class="more" href="board-01.html">完整总分榜 →</a>
-    </div>
-    <div id="top-preview"></div>
+    <div class="hero-folio">INDEX.00 // AI TEST REPORT</div>
   </section>
 
-  <section class="sec" id="cases">
-    <div class="sec-head">
-      <h2><span class="en">TEST CASES · TC-01~08</span>八个测试用例</h2>
-    </div>
-    <div class="cards">
-      <a class="card" href="tc-01.html">
-        <div class="no">01</div>
-        <div class="en">VOXEL CLASSIC ARCHITECTURE</div>
-        <h3>3D 体素中国古典建筑群</h3>
-        <p>Three.js 生成 Minecraft 风格中式古建群：主殿/配殿/山门/宝塔，中轴对称院落 + 飞檐翘角 + 光影氛围。</p>
-        <div class="foot"><span>空间建模</span><span class="go">→</span></div>
-      </a>
-      <a class="card" href="tc-02.html">
-        <div class="no">02</div>
-        <div class="en">VOXEL LANDSCAPE · FALL &amp; CLOUD</div>
-        <h3>3D 体素自然景观 · 山瀑布穿云</h3>
-        <p>体素山脉 + 瀑布倾泻 + 穿云遮挡关系，考察模型对自然地貌与水体物理的世界知识。</p>
-        <div class="foot"><span>世界理解与知识储备（Addon）</span><span class="go">→</span></div>
-      </a>
-      <a class="card" href="tc-03.html">
-        <div class="no">03</div>
-        <div class="en">LANDING PAGE · OUTDOOR GEAR</div>
-        <h3>前端落地页 · 户外机能风</h3>
-        <p>不给风格约束的商业落地页：由模型自主设计一套自洽、有辨识度的视觉方案。</p>
-        <div class="foot"><span>视觉与交互设计</span><span class="go">→</span></div>
-      </a>
-      <a class="card" href="tc-04.html">
-        <div class="no">04</div>
-        <div class="en">FAIRY TALE REWRITE · LITTLE RED RIDING HOOD</div>
-        <h3>童话改编创作 · 小红帽反套路</h3>
-        <p>以《小红帽》人设为基础创作全新故事：情节必须与原作截然不同，考察过拟合/创意/文本能力（500~2000 字）。</p>
-        <div class="foot"><span>文本创作</span><span class="go">→</span></div>
-      </a>
-      <a class="card" href="tc-05.html">
-        <div class="no">05</div>
-        <div class="en">OFFICIAL DOCUMENT MINING</div>
-        <h3>公文理解提炼</h3>
-        <p>从会议纪要中提炼议定事项要点：限 7 条、限 500 字、按时间节点排序、零幻觉。</p>
-        <div class="foot"><span>结构化理解</span><span class="go">→</span></div>
-      </a>
-      <a class="card" href="tc-06.html">
-        <div class="no">06</div>
-        <div class="en">PAPER READING · Q&amp;A</div>
-        <h3>论文解读 · 小众论文问答</h3>
-        <p>阅读随附的小众科学论文（PDF），解答 3 个问题（每答 ≤1000 字）——考察 PDF 解析、要点提取与幻觉抑制。</p>
-        <div class="foot"><span>文本理解与信息提取</span><span class="go">→</span></div>
-      </a>
-      <a class="card" href="tc-07.html">
-        <div class="no">07</div>
-        <div class="en">INVENTORY SERVICE · TRAP SPEC</div>
-        <h3>库存服务 · 规格陷阱题</h3>
-        <p>内存版库存服务接入外部合作方：幂等 + 并发 + 回滚 + 自证，标准 vs 实践冲突 + 蜜罐陷阱逐项拦截。</p>
-        <div class="foot"><span>后端能力</span><span class="go">→</span></div>
-      </a>
-      <a class="card" href="tc-08.html">
-        <div class="no">08</div>
-        <div class="en">BLACK HOLE · GENERAL RELATIVITY</div>
-        <h3>黑洞模拟 · 广义相对论</h3>
-        <p>HTML 真实物理黑洞模拟：广义相对论光线追踪 + 物理公式 + OrbitControls，考察物理理解与保真度（不评代码）。</p>
-        <div class="foot"><span>物理知识</span><span class="go">→</span></div>
-      </a>
-    </div>
+  <section class="report-section board-preview-section">
+    <header class="section-head">
+      <div><span>// BOARD.01</span><h2>当前总榜</h2></div>
+      <p>21 个完整测评<br>参考总分 400</p>
+    </header>
+    <div id="top-preview" class="top-preview"></div>
+    <a class="section-link" href="board-01.html">OPEN FINAL STANDINGS <b>→</b></a>
   </section>
 
-  <section class="sec">
-    <div class="sec-head">
-      <h2><span class="en">SCORE BOARDS</span>四张评分榜</h2>
-    </div>
-    <div class="cards">
-      <a class="card" href="board-01.html">
-        <div class="no">01</div>
-        <div class="en">BOARD · TOTAL SCORE</div>
-        <h3>总分榜</h3>
-        <p>八个用例全部测完的 run 按合计分排名。</p>
-        <div class="foot"><span>TOTAL SCORE</span><span class="go">→</span></div>
-      </a>
-      <a class="card" href="board-02.html">
-        <div class="no">02</div>
-        <div class="en">BOARD · PER CASE</div>
-        <h3>用例榜</h3>
-        <p>TC-01 ~ TC-08 每个用例一张排名表：总分、百分位与各考察点得分。</p>
-        <div class="foot"><span>PER CASE</span><span class="go">→</span></div>
-      </a>
-      <a class="card" href="board-03.html">
-        <div class="no">03</div>
-        <div class="en">BOARD · PER ITEM</div>
-        <h3>单项榜</h3>
-        <p>考察点级前三甲（含并列）。</p>
-        <div class="foot"><span>PER ITEM</span><span class="go">→</span></div>
-      </a>
-      <a class="card" href="board-04.html">
-        <div class="no">04</div>
-        <div class="en">BOARD · SIX DIMENSIONS</div>
-        <h3>六维能力</h3>
-        <p>六维能力雷达：前端开发 / 后端代码 / 逻辑理解 / 科学研究 / 文学创作 / 审美视觉。</p>
-        <div class="foot"><span>SIX DIMENSIONS</span><span class="go">→</span></div>
-      </a>
-    </div>
+  <section class="report-section direction-preview-section">
+    <header class="section-head">
+      <div><span>// BOARD.04</span><h2>四个能力方向</h2></div>
+      <p>TEXT · FRONTEND<br>BACKEND · KNOWLEDGE</p>
+    </header>
+    <div id="direction-preview" class="direction-grid"></div>
   </section>
 
-  <section class="sec">
-    <div class="notebox">
-      <b>口径说明</b>：总分榜/用例榜百分位 = 得分 ÷ 该榜榜首得分（榜首恒 100%）；六维雷达默认排名换算百分位（该维第一名恒 100%）。TC-07 总分允许超过 100（基础 100 + 冲突处理 ±15）。
-      本站只公开排名与分数；逐题评分备注、扣分判例与评语录留存在内部评分档案。
-    </div>
+  <section class="report-section" id="tasks">
+    <header class="section-head">
+      <div><span>// TASK INDEX</span><h2>七个真实任务</h2></div>
+      <p>文字、代码、视觉与知识<br>从交付结果反推能力</p>
+    </header>
+    <div class="task-list"><a class="task-card drop" href="tc-01.html">
+  <div class="task-no">01</div>
+  <div class="task-copy"><span>TEXT / CREATIVE</span><h3>童话改编创作（小红帽反套路）</h3><p>会过拟合导致写不出来吗？</p></div>
+  <div class="task-weight">TEXT 50%<b>↗</b></div>
+</a><a class="task-card drop" href="tc-02.html">
+  <div class="task-no">02</div>
+  <div class="task-copy"><span>TEXT / RESEARCH</span><h3>论文解读（小众论文问答）</h3><p>要的是事实准确，而非联网搜索</p></div>
+  <div class="task-weight">TEXT 50% · KNOWLEDGE 50%<b>↗</b></div>
+</a><a class="task-card drop" href="tc-03.html">
+  <div class="task-no">03</div>
+  <div class="task-copy"><span>FRONTEND / 3D</span><h3>3D 体素中国建筑群</h3><p>中式 vs 日式，一字之差</p></div>
+  <div class="task-weight">FRONTEND 25%<b>↗</b></div>
+</a><a class="task-card drop" href="tc-04.html">
+  <div class="task-no">04</div>
+  <div class="task-copy"><span>FRONTEND / 3D · ADDON</span><h3>山+瀑布+穿云（Addon）</h3><p>水往低处流，AI 知道吗</p></div>
+  <div class="task-weight">FRONTEND 25% · KNOWLEDGE 10%<b>↗</b></div>
+</a><a class="task-card drop" href="tc-05.html">
+  <div class="task-no">05</div>
+  <div class="task-copy"><span>FRONTEND / WEB</span><h3>前端落地页</h3><p>AI审美之间亦有差距</p></div>
+  <div class="task-weight">FRONTEND 40%<b>↗</b></div>
+</a><a class="task-card drop" href="tc-06.html">
+  <div class="task-no">06</div>
+  <div class="task-copy"><span>BACKEND / SPEC</span><h3>超级 MES 史山修复</h3><p>修十处史山，还敢虚报吗？</p></div>
+  <div class="task-weight">BACKEND 100%<b>↗</b></div>
+</a><a class="task-card drop" href="tc-07.html">
+  <div class="task-no">07</div>
+  <div class="task-copy"><span>SCIENCE / 3D</span><h3>黑洞模拟（广义相对论）</h3><p>物理模拟，能用到多少知识点？</p></div>
+  <div class="task-weight">FRONTEND 10% · KNOWLEDGE 40%<b>↗</b></div>
+</a></div>
+  </section>
+
+  <section class="method-band">
+    <div><span>// METHOD</span><strong>每题以全库基准归一，四方向按固定权重合成。</strong></div>
+    <p>本站只公开题面、检查点、排名与分数；评分备注与内部裁决记录不公开。</p>
   </section>
 </main>
 
-<footer class="foot"><div class="wrap">
-  <span class="fm">PROMPT.LIB × SCORE.BOARDS — 8 CASES / 4 BOARDS</span>
-  <span class="fn">数据更新 <b>2026-08-22</b> · 34 runs · 17 完整测评 · 由 scores.yaml 自动生成</span>
-</div></footer>
-<script src="assets/app.js" defer></script>
-<script type="module" src="assets/hero.js"></script>
+<footer class="site-foot">
+  <div><strong>AI TEST REPORT</strong><span>七个题目 · 四个方向 · 一套公开口径</span></div>
+  <div class="foot-meta"><span>UPDATED 2026-08-30</span><span>21 COMPLETE RUNS</span><span>STATIC / PUBLIC</span></div>
+</footer>
+<script src="assets/app.js?v=20260830-6" defer></script>
 </body>
 </html>

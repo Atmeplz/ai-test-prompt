@@ -1,77 +1,54 @@
-# 提示词全库 × 评分榜 · GitHub Pages
+# AI 能力专项测试 · GitHub Pages
 
-清透玻璃拟态静态站点：Three.js 琉璃流体球 Hero + 数据驱动四榜，展示：
+七题四方向公开站。视觉与测评视频统一为「瑞士排版 × 蓝图信息密度」：米白纸面、近黑文字、系统蓝强调色、垂直栏线、等宽元数据与大字号成绩展示。
 
-- AI 能力专项测试的完整 8 则提示词（TC-01 ~ TC-08）
-- 四张评分榜：01 总分榜 / 02 用例榜 / 03 单项榜 / 04 六维雷达（交互式）
+## 页面结构
 
-## 目录
-
-```
+```text
 pages/
-├── index.html               # 首页：Hero + 总榜速览 Top5 + 8 用例 + 4 榜入口
-├── tc-01.html … tc-08.html  # 各用例完整提示词（玻璃终端展示）
-├── board-01.html … board-04.html  # 四张评分榜（外壳，正文由 app.js 渲染）
-├── data/
-│   └── site.json            # 公开版站点数据（自动生成，禁止手改）
-├── assets/
-│   ├── style.css            # 设计系统（清透玻璃拟态令牌）
-│   ├── hero.js              # Three.js Hero（CDN 加载，失败自动退化为纯 CSS 极光）
-│   ├── app.js               # 读 data/site.json 渲染四榜 + 雷达图 + 首页速览
-│   └── fonts/               # Helvetica Now Display ExtBlk Ita
-├── build.py                 # 生成脚本（数据 + 页面一条命令）
-├── .nojekyll
-└── README.md
+├── index.html                  # 首页：总榜速览、四方向、七题索引
+├── tc-01.html … tc-07.html    # 七道题：档案、排名、完整题面
+├── tc-08.html                 # 旧八题制归档说明
+├── board-01.html              # 总分榜
+├── board-02.html              # 七道题逐题榜
+├── board-03.html              # 检查点前三档
+├── board-04.html              # 文字 / 前端 / 后端 / 知识四方向榜
+├── data/site.json             # 公开版站点数据（生成物）
+├── assets/style.css           # 全站设计系统
+├── assets/app.js              # 榜单与首页数据渲染
+└── build.py                   # 唯一生成入口
 ```
 
-## 日常维护（唯一入口）
+## 数据口径
 
-数据唯一事实源是 `../评分数据/scores.yaml`。**改分 / 加模型 / 改提示词后，只需一条命令**：
+- 当前体系：7 个题目、4 个能力方向、总分参考 400。
+- 题目分先按全库基准归一，再按 `tasks.yaml` 的固定权重合成方向分。
+- `build.py` 只读取 `../评分数据/out/board-data.json` 和 `../prompts/提示词/`。
+- 生成器只写 `pages/`，不会刷新或修改站外评分数据。
+- 公开数据包含模型身份、排名、分数、方向分、逐题分和检查点分；评语、金句、扣分备注、内部裁决与视频配置不会写入站点。
 
+## 更新站点
+
+在项目根目录运行：
+
+```powershell
+python pages/build.py
 ```
-cd pages && python build.py
+
+或在 `pages/` 内运行：
+
+```powershell
+python build.py
 ```
-
-它会自动：
-
-1. 检测 `scores.yaml` 是否比 `out/board-data.json` 新——是则先重跑 `../评分数据/build.py` 全量重算；
-2. 派生公开版 `data/site.json`（剥离内部字段，见下）；
-3. 重新渲染全部 HTML。
-
-然后把 `pages/` 提交推送即可，GitHub Pages 自动更新。
-
-> 注意：`../评分数据/build.py` 依赖 `pyyaml`，请用装了 pyyaml 的 Python 跑整条链
->（例如系统 Python `py build.py`，或先 `pip install pyyaml`）。
-
-## 公开 vs 内部（数据分层）
-
-站点只公开"看得懂"的结果数据：
-
-- 排名、合计分、百分位、百分制、逐用例得分、考察点得分、六维数值
-- 单项榜只公开每考察点**前三名（含并列）**
-
-以下内容留在 `../评分数据/*.md` 内部档案，**不进站点**：
-
-- 逐行评分备注、扣分判例、合计核对（重算记录）
-- 画像与金句（用户定稿，视频备用）
-- 取数规则、迁移期标注等内部工作流说明
-
-`pages/build.py` 的 `build_site_json()` 是公开/内部的唯一分界线：字段在那里显式挑选，
-新增字段默认不会上站。
 
 ## 本地预览
 
-```
+```powershell
 python -m http.server 8080 --directory pages
-# 打开 http://localhost:8080
 ```
 
-榜单页通过 `fetch("data/site.json")` 取数，请用 http 服务预览（`file://` 直接双击打开会因浏览器安全策略取不到数据）。
+打开 `http://localhost:8080/`。榜单通过 `fetch("data/site.json")` 读取数据，因此不要用 `file://` 直接双击预览。
 
-## 发布到 GitHub Pages
+## 发布
 
-1. 把 `pages/` 提交到 Git 仓库并推到 GitHub；
-2. 仓库 → **Settings → Pages** → Source 选 **Deploy from a branch**，Branch 选 `main`、目录 `/ (root)`；
-3. 等 1~2 分钟，访问 `https://<用户名>.github.io/<仓库>/`。
-
-全站相对路径，仓库根部署或子路径部署均可；Three.js 走 jsdelivr CDN，加载失败时 Hero 自动退化为 CSS 极光背景，不影响任何内容展示。
+`pages/` 是独立 Git 仓库，继续使用现有 GitHub Pages 发布方式即可。全站使用相对路径，仓库根部署和子路径部署均可。

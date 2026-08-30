@@ -1,41 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>02 用例榜 — 评分榜 · AI 能力专项测试</title>
-<meta name="description" content="TC-01 ~ TC-08 每个用例一张排名表：总分、百分位与各考察点得分。切换上方标签查看不同用例。">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%235b8cff'/%3E%3Cstop offset='1' stop-color='%232fd4b6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='url(%23g)'/%3E%3Crect x='9' y='9' width='14' height='14' rx='4' fill='white'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/style.css">
+<meta name="theme-color" content="#F4F0E6">
+<title>题目榜 · AI 能力专项测试</title>
+<meta name="description" content="七个题目分别排名；切换题目可查看归一分、原始分与检查点拆解。">
+<link rel="stylesheet" href="assets/style.css?v=20260830-6">
 </head>
-<body class="page-board">
-<div class="aurora"><i></i><i></i><i></i><i></i></div>
-<div class="gridlines"></div>
-<header class="topnav">
-  <a class="brand" href="index.html"><span class="logo"></span><span class="bt">AI 能力专项测试</span></a>
-  <nav><a href="index.html">首页</a><a href="board-01.html">总分榜</a><a href="board-02.html" class="on">用例榜</a><a href="board-03.html">单项榜</a><a href="board-04.html">六维</a></nav>
+<body class="board-page">
+<div class="blueprint-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<span class="reg-cross cross-tl" aria-hidden="true"></span>
+<span class="reg-cross cross-tr" aria-hidden="true"></span>
+<header class="site-nav">
+  <a class="nav-brand" href="index.html"><i></i><span>AI 能力专项测试<small>CAPABILITY BENCHMARK</small></span></a>
+  <nav><a href="index.html"><span>INDEX</span><b>首页</b></a><a href="board-01.html"><span>TOTAL</span><b>总榜</b></a><a href="board-04.html"><span>DIRECTIONS</span><b>方向</b></a><a href="board-02.html" aria-current="page"><span>TASKS</span><b>题目</b></a><a href="board-03.html"><span>POINTS</span><b>检查点</b></a></nav>
 </header>
 
-<main class="wrap">
-  <div class="pagehead">
-    <div class="crumb">SCORE BOARDS / 02 · PER CASE</div>
-    <h1>用例榜<span class="en">PER CASE</span></h1>
-    <p class="lede">TC-01 ~ TC-08 每个用例一张排名表：总分、百分位与各考察点得分。切换上方标签查看不同用例。</p>
-    <div class="meta-chips">
-      <span class="mc"><b data-stat="runs">34</b> runs</span>
-      <span class="mc"><b data-stat="complete">17</b> 完整八用例</span>
-      <span class="mc">更新 <b data-stat="updated">2026-08-22</b></span>
-      <span class="mc">数据源 · scores.yaml</span>
-    </div>
-  </div>
+<main>
+  <section class="inner-hero board-hero">
+    <div class="report-meta reveal"><div><span>// BOARD</span><b>02 / 04</b></div><div><span>// RUNS</span><b>21</b></div><div><span>// UPDATED</span><b>2026-08-30</b></div></div>
+    <div class="inner-kicker">TASK RANKINGS</div>
+    <h1 class="inner-title reveal delay-1"><span>题目榜</span></h1>
+    <div class="inner-band band-in"><strong>七个题目分别排名；切换题目可查看归一分、原始分与检查点拆解。</strong><div><span>PUBLIC</span><span>REF 400</span></div></div>
+    <div class="inner-folio">BOARD.02 // TASK RANKINGS</div>
+  </section>
 
-  <div data-site="02"></div>
+  <section class="report-section board-content-section">
+    <div class="board-content" data-site="02"></div>
+  </section>
 </main>
 
-<footer class="foot"><div class="wrap">
-  <span class="fm">PROMPT.LIB × SCORE.BOARDS — 8 CASES / 4 BOARDS</span>
-  <span class="fn">数据更新 <b>2026-08-22</b> · 34 runs · 17 完整测评 · 由 scores.yaml 自动生成</span>
-</div></footer>
-<script src="assets/app.js" defer></script>
+<footer class="site-foot">
+  <div><strong>AI TEST REPORT</strong><span>七个题目 · 四个方向 · 一套公开口径</span></div>
+  <div class="foot-meta"><span>UPDATED 2026-08-30</span><span>21 COMPLETE RUNS</span><span>STATIC / PUBLIC</span></div>
+</footer>
+<script src="assets/app.js?v=20260830-6" defer></script>
 </body>
 </html>
