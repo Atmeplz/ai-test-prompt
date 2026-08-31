@@ -529,9 +529,43 @@ button { color: inherit; font: inherit; }
   .site-notice p span { display: none; }
   .direction-grid { grid-template-columns: repeat(2, 1fr); }
   .podium-grid { grid-template-columns: 1fr; }
-  .podium-card { min-height: 280px; }
-  .podium-card > div { margin-top: 30px; }
-  .podium-card > strong { margin-top: 36px; }
+  .podium-card {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 58px minmax(180px, 1fr) auto auto;
+    grid-template-rows: auto 5px auto;
+    align-items: center;
+    gap: 18px 24px;
+  }
+  .podium-card > span { grid-column: 1; grid-row: 1; }
+  .podium-card > div {
+    grid-column: 2;
+    grid-row: 1;
+    height: auto;
+    margin-top: 0;
+    overflow: visible;
+  }
+  .podium-card > strong {
+    grid-column: 3;
+    grid-row: 1;
+    margin-top: 0;
+    font-size: clamp(64px, 8vw, 92px);
+  }
+  .podium-card > em { grid-column: 4; grid-row: 1; margin-left: 0; align-self: end; padding-bottom: 5px; }
+  .podium-card > i {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+  }
+  .podium-card > p {
+    position: static;
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
 }
 
 @media (max-width: 760px) {
@@ -593,9 +627,19 @@ button { color: inherit; font: inherit; }
   .inner-band span { font-size: 8px; }
   .content-head { min-height: 110px; grid-template-columns: 1fr; gap: 10px; }
   .content-head > b { display: none; }
-  .podium-card { min-height: 330px; }
-  .podium-card > div { height: 72px; margin-top: 32px; }
-  .podium-card > strong { margin-top: 14px; font-size: 76px; }
+  .podium-card {
+    padding: 20px 14px;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    grid-template-rows: auto auto 5px auto;
+    gap: 16px 10px;
+  }
+  .podium-card > span { grid-column: 1; grid-row: 1; align-self: start; padding-top: 3px; }
+  .podium-card > div { grid-column: 2 / -1; grid-row: 1; }
+  .podium-card > div b { font-size: clamp(18px, 6vw, 24px); }
+  .podium-card > strong { grid-column: 1 / 3; grid-row: 2; font-size: clamp(58px, 19vw, 76px); }
+  .podium-card > em { grid-column: 3; grid-row: 2; }
+  .podium-card > i { grid-row: 3; }
+  .podium-card > p { grid-row: 4; }
   .report-tabs { grid-template-columns: repeat(4, 1fr); }
   .report-tabs button { min-height: 78px; }
   .direction-tabs { grid-template-columns: repeat(2, 1fr); }

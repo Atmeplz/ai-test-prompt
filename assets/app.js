@@ -11,7 +11,7 @@
 
   setupAnnouncement();
 
-  fetch("data/site.json?v=20260831-4")
+  fetch("data/site.json?v=20260901-1")
     .then((response) => response.json())
     .then((data) => boot(data));
 
