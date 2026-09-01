@@ -410,7 +410,32 @@ button { color: inherit; font: inherit; }
 .content-head p { margin: 0; font-family: var(--mono); font-size: 11px; color: var(--muted); }
 .content-head > b { font-family: var(--mono); font-size: 12px; letter-spacing: .13em; color: var(--muted); }
 
-.podium-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.vendor-filter { margin-bottom: 34px; border: 1px solid var(--line); }
+.vendor-filter-head { min-height: 92px; padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--line); }
+.vendor-filter-head > div:first-child { display: grid; grid-template-columns: auto auto; align-items: baseline; gap: 6px 18px; }
+.vendor-filter-head span { grid-column: 1 / -1; font-family: var(--mono); font-size: 9px; letter-spacing: .14em; color: var(--muted); }
+.vendor-filter-head strong { font-size: 22px; }
+.vendor-filter-head small { font-family: var(--mono); font-size: 9px; color: var(--muted); }
+.vendor-filter-head small b { color: var(--ink); }
+.vendor-filter-actions { display: flex; gap: 8px; }
+.vendor-filter-actions button { min-width: 84px; padding: 10px 13px; border: 1px solid var(--ink); background: transparent; font-size: 12px; font-weight: 800; cursor: pointer; transition: background .2s ease, color .2s ease, opacity .2s ease; }
+.vendor-filter-actions button:hover:not(:disabled) { background: var(--ink); color: #fff; }
+.vendor-filter-actions button:disabled { opacity: .24; cursor: default; }
+.vendor-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.vendor-option { min-width: 0; min-height: 54px; padding: 10px 14px; display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 10px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); cursor: pointer; transition: background .2s ease; }
+.vendor-option:hover { background: rgba(255,255,255,.42); }
+.vendor-option input { width: 17px; height: 17px; margin: 0; accent-color: var(--vendor); cursor: pointer; }
+.vendor-option span { overflow: hidden; font-size: 11px; font-weight: 800; letter-spacing: .03em; text-overflow: ellipsis; white-space: nowrap; }
+.vendor-option small { min-width: 20px; font-family: var(--mono); font-size: 9px; text-align: right; color: var(--muted); }
+.vendor-option input:not(:checked) ~ span,
+.vendor-option input:not(:checked) ~ small { opacity: .32; }
+.vendor-results { min-height: 240px; }
+.filter-empty { min-height: 240px; padding: 48px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid var(--line); text-align: center; }
+.filter-empty span { font-family: var(--mono); font-size: 9px; letter-spacing: .14em; color: var(--muted); }
+.filter-empty strong { margin-top: 14px; font-size: clamp(28px, 4vw, 48px); font-style: italic; }
+.filter-empty p { margin: 10px 0 0; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+
+.podium-grid { display: grid; grid-template-columns: repeat(var(--podium-columns, 3), minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
 .podium-card { min-height: 390px; padding: 26px; position: relative; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; }
 .podium-card > span { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; color: var(--muted); }
 .podium-card > div { height: 82px; margin-top: 42px; display: grid; grid-template-columns: 14px 1fr; align-content: start; align-items: center; gap: 13px; overflow: hidden; }
@@ -627,6 +652,13 @@ button { color: inherit; font: inherit; }
   .inner-band span { font-size: 8px; }
   .content-head { min-height: 110px; grid-template-columns: 1fr; gap: 10px; }
   .content-head > b { display: none; }
+  .vendor-filter-head { padding: 16px 14px; align-items: flex-start; flex-direction: column; }
+  .vendor-filter-head > div:first-child { width: 100%; grid-template-columns: 1fr auto; }
+  .vendor-filter-actions { width: 100%; }
+  .vendor-filter-actions button { flex: 1; }
+  .vendor-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .vendor-option { padding-inline: 10px; gap: 8px; }
+  .filter-empty { min-height: 210px; padding-inline: 14px; }
   .podium-card {
     padding: 20px 14px;
     grid-template-columns: 38px minmax(0, 1fr) auto;

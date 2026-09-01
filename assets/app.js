@@ -11,7 +11,7 @@
 
   setupAnnouncement();
 
-  fetch("data/site.json?v=20260901-1")
+  fetch("data/site.json?v=20260901-2")
     .then((response) => response.json())
     .then((data) => boot(data));
 
@@ -101,7 +101,69 @@
     return `<header class="content-head"><span>// ${esc(code)}</span><div><h2>${esc(title)}</h2><p>${esc(note)}</p></div><b>${esc(en)}</b></header>`;
   }
 
-  function renderTotalBoard(target, data, rows) {
+  function vendorOptions(rows) {
+    const vendors = new Map();
+    rows.forEach((row) => {
+      if (!vendors.has(row.vendor)) {
+        vendors.set(row.vendor, {
+          key: row.vendor,
+          label: row.vendor_display || row.vendor,
+          count: 0,
+          row,
+        });
+      }
+      vendors.get(row.vendor).count += 1;
+    });
+    return [...vendors.values()];
+  }
+
+  function vendorFilter(options, runCount) {
+    return `<section class="vendor-filter" aria-label="厂商筛选">
+      <header class="vendor-filter-head">
+        <div><span>// VENDOR FILTER</span><strong>厂商筛选</strong><small aria-live="polite"><b data-vendor-selected>${options.length}</b> / ${options.length} 个厂商 · <b data-vendor-visible>${runCount}</b> 个模型</small></div>
+        <div class="vendor-filter-actions"><button type="button" data-vendor-action="all" disabled>全选</button><button type="button" data-vendor-action="none">全不选</button></div>
+      </header>
+      <div class="vendor-options" role="group" aria-label="按厂商显示模型">
+        ${options.map((option) => `<label class="vendor-option" style="${vendorStyle(option.row)}"><input type="checkbox" value="${esc(option.key)}" data-vendor checked><span>${esc(option.label)}</span><small>${option.count}</small></label>`).join("")}
+      </div>
+    </section>`;
+  }
+
+  function filterEmpty() {
+    return `<div class="filter-empty"><span>// NO VENDOR SELECTED</span><strong>尚未选择厂商</strong><p>勾选上方厂商，或点击“全选”恢复榜单。</p></div>`;
+  }
+
+  function bindVendorFilter(root, rows, onChange) {
+    const inputs = $$('input[data-vendor]', root);
+    const allButton = $('[data-vendor-action="all"]', root);
+    const noneButton = $('[data-vendor-action="none"]', root);
+    const selectedCount = $('[data-vendor-selected]', root);
+    const visibleCount = $('[data-vendor-visible]', root);
+
+    function update(initial = false) {
+      const selected = new Set(inputs.filter((input) => input.checked).map((input) => input.value));
+      const filtered = rows.filter((row) => selected.has(row.vendor));
+      selectedCount.textContent = selected.size;
+      visibleCount.textContent = filtered.length;
+      allButton.disabled = selected.size === inputs.length;
+      noneButton.disabled = selected.size === 0;
+      onChange(filtered, initial);
+    }
+
+    inputs.forEach((input) => input.addEventListener("change", () => update()));
+    allButton.addEventListener("click", () => {
+      inputs.forEach((input) => { input.checked = true; });
+      update();
+    });
+    noneButton.addEventListener("click", () => {
+      inputs.forEach((input) => { input.checked = false; });
+      update();
+    });
+    update(true);
+  }
+
+  function totalBoardContent(data, rows) {
+    if (!rows.length) return filterEmpty();
     const podium = rows.slice(0, 3).map((row, index) => `
       <article class="podium-card rank-${index + 1} drop" style="${vendorStyle(row)}">
         <span>No. ${String(row.rank).padStart(2, "0")}</span>
@@ -124,15 +186,23 @@
       </tr>
     `).join("");
 
-    target.innerHTML = `
-      ${boardIntro("FINAL", "REFERENCE 400", "总榜名次", "总分 = 文字 + 前端 + 后端 + 知识")}
-      <div class="podium-grid">${podium}</div>
+    return `<div class="podium-grid" style="--podium-columns:${Math.min(rows.length, 3)}">${podium}</div>
       <div class="table-shell">
         <table class="report-table total-table">
           <thead><tr><th>NO.</th><th>MODEL / RUN</th>${directionHeads}<th>TOTAL</th><th>REF.</th></tr></thead>
           <tbody>${tableRows}</tbody>
         </table>
       </div>`;
+  }
+
+  function renderTotalBoard(target, data, rows) {
+    const options = vendorOptions(rows);
+    target.innerHTML = `${boardIntro("FINAL", "REFERENCE 400", "总榜名次", "总分 = 文字 + 前端 + 后端 + 知识")}${vendorFilter(options, rows.length)}<div class="vendor-results"></div>`;
+    const results = $(".vendor-results", target);
+    bindVendorFilter(target, rows, (filtered, initial) => {
+      results.innerHTML = totalBoardContent(data, filtered);
+      if (!initial) animateNumbers(results);
+    });
   }
 
   function taskTabs(data, active) {
@@ -197,21 +267,31 @@
         <div><span>// DIRECTION</span><h3>${esc(direction.zh)}</h3><p>${esc(direction.en)}</p></div>
         <div class="weight-map">${weights}</div>
       </div>
-      <div class="direction-ranking">${ranking.map((row) => {
+      <div class="direction-ranking">${ranking.length ? ranking.map((row) => {
         const score = row.directions[key];
         return `<div class="direction-row drop" style="${vendorStyle(row)}"><span class="result-rank">${String(score.rank).padStart(2, "0")}</span>${modelCell(row)}<strong>${fmt(score.value, 1)}</strong><span>${pct(score.pct)}</span><i><i style="--w:${Math.min(score.value, 100) / 100}"></i></i></div>`;
-      }).join("")}</div>`;
+      }).join("") : filterEmpty()}</div>`;
   }
 
   function renderDirectionBoard(target, data, rows) {
     const keys = Object.keys(data.directions);
     const hashKey = location.hash.slice(1);
     const first = keys.includes(hashKey) ? hashKey : keys[0];
+    const options = vendorOptions(rows);
+    let active = first;
+    let filteredRows = rows;
     const tabs = `<div class="direction-tabs">${keys.map((key, index) => `<button type="button" data-key="${esc(key)}" class="${key === first ? "on" : ""}"><span>0${index + 1}</span><b>${esc(data.directions[key].zh)}</b><small>${esc(data.directions[key].en)}</small></button>`).join("")}</div>`;
-    target.innerHTML = `${boardIntro("DIRECTIONS", "04 BOARDS", "四方向能力", "方向分天然以 100 为参考")}${tabs}<div class="tab-pane">${directionTable(data, rows, first)}</div>`;
+    target.innerHTML = `${boardIntro("DIRECTIONS", "04 BOARDS", "四方向能力", "方向分天然以 100 为参考")}${vendorFilter(options, rows.length)}${tabs}<div class="tab-pane"></div>`;
+    const pane = $(".tab-pane", target);
+    bindVendorFilter(target, rows, (filtered) => {
+      filteredRows = filtered;
+      pane.innerHTML = directionTable(data, filteredRows, active);
+      requestAnimationFrame(() => pane.classList.add("is-ready"));
+    });
     bindTabs(target, (key) => {
+      active = key;
       history.replaceState(null, "", `#${key}`);
-      return directionTable(data, rows, key);
+      return directionTable(data, filteredRows, key);
     });
   }
 
