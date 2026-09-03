@@ -51,6 +51,13 @@
     requestAnimationFrame(() => document.body.classList.add("is-ready"));
   }
 
+  // 有 logo 素材的厂商键（pages/assets/logos/<key>.png）；未收录的厂商回退色块
+  const VENDOR_LOGOS = new Set([
+    "openai", "anthropic", "google", "xai", "deepseek", "zhipu", "alibaba",
+    "moonshot", "minimax", "bytedance", "tencent", "sensetime", "cursor",
+    "meta", "dots", "thinking-machines",
+  ]);
+
   function vendorStyle(row) {
     const background = row.gradient
       ? `linear-gradient(135deg,${row.gradient.join(",")})`
@@ -59,6 +66,9 @@
   }
 
   function vendorMark(row) {
+    if (VENDOR_LOGOS.has(row.vendor)) {
+      return `<img class="vendor-mark vendor-logo" src="assets/logos/${esc(row.vendor)}.png" alt="" loading="lazy">`;
+    }
     return `<i class="vendor-mark" style="${vendorStyle(row)}"></i>`;
   }
 

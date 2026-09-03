@@ -15,13 +15,13 @@ ROOT = pathlib.Path(__file__).resolve().parent
 PROJECT = ROOT.parent
 BOARD_JSON = PROJECT / "评分数据" / "out" / "board-data.json"
 SITE_JSON = ROOT / "data" / "site.json"
-ASSET_VERSION = "20260901-2"
+ASSET_VERSION = "20260903-2"
 
 ANNOUNCEMENT = {
-    "id": "notice-001",
-    "tag": "NOTICE // 001",
-    "title": "提示词正在整理中，暂不开放浏览。",
-    "copy": "后续可直接下载规范的题目包",
+    "id": "notice-002",
+    "tag": "NOTICE // 002",
+    "title": "提示词已开放下载。",
+    "copy": "详情请看「题目」界面",
 }
 
 BOARD_PAGES = [
@@ -36,6 +36,12 @@ BOARD_PAGES = [
         "title": "题目榜",
         "en": "TASK RANKINGS",
         "lede": "七个题目分别排名；切换题目可查看归一分、原始分与检查点拆解。",
+        "prompt_pack": {
+            "href": "assets/prompts/prompts-0903.zip",
+            "filename": "提示词0903.zip",
+            "tag": "PROMPT PACK · ZIP · 3.0 MB",
+            "label": "下载提示词：0903更新",
+        },
     },
     {
         "no": "03",
@@ -220,7 +226,7 @@ def index_body(site: dict) -> str:
 
   <section class="method-band">
     <div><span>// METHOD</span><strong>每题以全库基准归一，四方向按固定权重合成。</strong></div>
-    <p>本站公开榜单、检查点统计、排名与分数；提示词整理完成后将提供规范题目包。</p>
+    <p>本站公开榜单、检查点统计、排名与分数；规范提示词包已在「题目」页开放下载。</p>
   </section>
 </main>
 
@@ -233,6 +239,14 @@ def index_body(site: dict) -> str:
 
 def board_body(board: dict, site: dict) -> str:
     meta = site["meta"]
+    pack = board.get("prompt_pack")
+    prompt_button = ""
+    if pack:
+        prompt_button = (
+            f'<a class="prompt-download reveal delay-2" href="{esc(pack["href"])}" '
+            f'download="{esc(pack["filename"])}">'
+            f'<span>// {esc(pack["tag"])}</span><b>{esc(pack["label"])}</b></a>'
+        )
     return f"""{head(f'{board["title"]} · AI 能力专项测试', board['lede'])}
 <body class="board-page">
 {page_grid()}
@@ -244,6 +258,7 @@ def board_body(board: dict, site: dict) -> str:
     {hero_meta([('BOARD', f'{board["no"]} / 04'), ('RUNS', str(meta['N_complete'])), ('UPDATED', meta['latest'])])}
     <div class="inner-kicker">{esc(board['en'])}</div>
     <h1 class="inner-title reveal delay-1"><span>{esc(board['title'])}</span></h1>
+    {prompt_button}
     <div class="inner-band band-in"><strong>{esc(board['lede'])}</strong><div><span>PUBLIC</span><span>REF {meta['total_ref']}</span></div></div>
     <div class="inner-folio">BOARD.{board['no']} // {esc(board['en'])}</div>
   </section>
