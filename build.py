@@ -15,7 +15,7 @@ ROOT = pathlib.Path(__file__).resolve().parent
 PROJECT = ROOT.parent
 BOARD_JSON = PROJECT / "评分数据" / "out" / "board-data.json"
 SITE_JSON = ROOT / "data" / "site.json"
-ASSET_VERSION = "20260909-1"
+ASSET_VERSION = "20260909-2"
 
 ANNOUNCEMENT = {
     "id": "notice-002",

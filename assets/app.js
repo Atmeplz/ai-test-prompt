@@ -289,7 +289,7 @@
       </div>
       <div class="direction-ranking">${ranking.length ? ranking.map((row) => {
         const score = row.directions[key];
-        return `<div class="direction-row drop" style="${vendorStyle(row)}"><span class="result-rank">${String(score.rank).padStart(2, "0")}</span>${modelCell(row)}<strong>${fmt(score.value, 1)}</strong><span>${pct(score.pct)}</span><i><i style="--w:${Math.min(score.value, 100) / 100}"></i></i></div>`;
+        return `<div class="direction-row drop" style="${vendorStyle(row)}"><span class="result-rank">${String(score.rank).padStart(2, "0")}</span>${modelCell(row)}<strong>${fmt(score.value, 1)}</strong><span class="direction-percent">${pct(score.pct)}</span><i><i style="--w:${Math.min(score.value, 100) / 100}"></i></i></div>`;
       }).join("") : filterEmpty()}</div>`;
   }
 

@@ -544,7 +544,7 @@ button { color: inherit; font: inherit; }
 .result-rank { font-family: var(--mono); color: var(--muted); }
 .direction-row { position: relative; min-height: 94px; display: grid; grid-template-columns: 60px minmax(250px, 1fr) 120px 90px; align-items: center; gap: 22px; border-bottom: 1px solid var(--line); overflow: hidden; }
 .direction-row > strong { font-family: var(--display); font-style: italic; font-size: 50px; text-align: right; }
-.direction-row > span:nth-of-type(2) { font-family: var(--mono); font-size: 13px; text-align: right; color: var(--muted); }
+.direction-row > .direction-percent { font-family: var(--mono); font-size: 13px; text-align: right; color: var(--muted); }
 .direction-row > i { position: absolute; left: 0; bottom: 0; width: 100%; height: 3px; }
 .direction-row > i i { display: block; width: calc(var(--w) * 100%); height: 100%; background: var(--vendor-bg); transform: scaleX(0); transform-origin: left; transition: transform 1s var(--ease-out); }
 .is-ready .direction-row > i i,
@@ -702,7 +702,7 @@ button { color: inherit; font: inherit; }
   .checkpoint-grid { grid-template-columns: 1fr; }
   .direction-row { min-height: 104px; grid-template-columns: 36px 1fr 70px; gap: 10px; }
   .direction-row > strong { font-size: 36px; }
-  .direction-row > span:nth-of-type(2) { display: none; }
+  .direction-row > .direction-percent { display: none; }
   .site-foot { padding: 28px 14px; align-items: flex-start; flex-direction: column; }
   .foot-meta { flex-wrap: wrap; gap: 10px 18px; }
 }
