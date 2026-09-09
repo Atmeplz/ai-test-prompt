@@ -11,9 +11,16 @@
 
   setupAnnouncement();
 
-  fetch("data/site.json?v=20260901-2")
-    .then((response) => response.json())
-    .then((data) => boot(data));
+  fetch("data/site.json", { cache: "no-cache" })
+    .then((response) => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.json();
+    })
+    .then((data) => boot(data))
+    .catch(() => {
+      const target = $("[data-site]") || $("#top-preview");
+      if (target) target.innerHTML = '<div class="filter-empty" role="alert"><strong>榜单暂时未能加载</strong><p>请检查网络连接后重试。</p><button type="button" onclick="location.reload()">重新加载</button></div>';
+    });
 
   function setupAnnouncement() {
     const notice = $(".site-notice");
@@ -26,8 +33,7 @@
 
     $(".notice-close", notice).addEventListener("click", () => {
       document.cookie = `${cookie}; Max-Age=31536000; Path=/; SameSite=Lax`;
-      notice.classList.add("is-leaving");
-      notice.addEventListener("animationend", () => notice.remove(), { once: true });
+      notice.remove();
     });
   }
 
@@ -72,8 +78,8 @@
     return `<i class="vendor-mark" style="${vendorStyle(row)}"></i>`;
   }
 
-  function modelCell(row) {
-    return `<span class="model-cell">${vendorMark(row)}<span><b>${esc(row.model)}</b><small>${esc(row.effort || "default")} · ${esc(row.platform || row.source || "direct")}</small></span></span>`;
+  function modelCell(row, rank) {
+    return `${rank == null ? "" : `<span class="mobile-rank">NO. ${String(rank).padStart(2, "0")}</span>`}<span class="model-cell">${vendorMark(row)}<span><b>${esc(row.model)}</b><small>${esc(row.effort || "default")} · ${esc(row.platform || row.source || "direct")}</small></span></span>`;
   }
 
   function count(value, suffix = "", digits = 1) {
@@ -189,7 +195,7 @@
     const tableRows = rows.map((row) => `
       <tr style="${vendorStyle(row)}">
         <td class="rank-cell">${String(row.rank).padStart(2, "0")}</td>
-        <td>${modelCell(row)}</td>
+        <td>${modelCell(row, row.rank)}</td>
         ${Object.keys(data.directions).map((key) => `<td>${fmt(row.directions[key].value, 1)}</td>`).join("")}
         <td class="total-cell">${fmt(row.total, 1)}</td>
         <td>${pct(row.pct100)}</td>
@@ -197,7 +203,7 @@
     `).join("");
 
     return `<div class="podium-grid" style="--podium-columns:${Math.min(rows.length, 3)}">${podium}</div>
-      <div class="table-shell">
+      <div class="table-hint">完整分项 · 左右滑动查看 →</div><div class="table-shell" tabindex="0" role="region" aria-label="总分与四方向明细，可左右滚动">
         <table class="report-table total-table">
           <thead><tr><th>NO.</th><th>MODEL / RUN</th>${directionHeads}<th>TOTAL</th><th>REF.</th></tr></thead>
           <tbody>${tableRows}</tbody>
@@ -231,11 +237,11 @@
         <div><span>// TASK.${String(task.order).padStart(2, "0")}</span><h3>${esc(task.name)}</h3><p>${esc(task.domain)}</p></div>
         <div><b>${task.ref}</b><span>RAW REFERENCE</span></div>
       </div>
-      <div class="table-shell"><table class="report-table task-table">
+      <div class="table-hint">检查点明细 · 左右滑动查看 →</div><div class="table-shell" tabindex="0" role="region" aria-label="逐题分数明细，可左右滚动"><table class="report-table task-table">
         <thead><tr><th>NO.</th><th>MODEL / RUN</th><th>NORM.</th><th>RAW</th>${itemCodes.map((code) => `<th>${esc(code)}<small>${esc(caseMeta.items[code])}</small></th>`).join("")}</tr></thead>
         <tbody>${ranking.map((row) => {
           const result = row.cases[key];
-          return `<tr style="${vendorStyle(row)}"><td class="rank-cell">${String(result.rank).padStart(2, "0")}</td><td>${modelCell(row)}</td><td class="total-cell">${fmt(result.total, 1)}</td><td>${fmt(result.raw_total, 2)}</td>${itemCodes.map((code) => `<td>${fmt(result.items[code], 1)}</td>`).join("")}</tr>`;
+          return `<tr style="${vendorStyle(row)}"><td class="rank-cell">${String(result.rank).padStart(2, "0")}</td><td>${modelCell(row, result.rank)}</td><td class="total-cell">${fmt(result.total, 1)}</td><td>${fmt(result.raw_total, 2)}</td>${itemCodes.map((code) => `<td>${fmt(result.items[code], 1)}</td>`).join("")}</tr>`;
         }).join("")}</tbody>
       </table></div>`;
   }
@@ -256,7 +262,11 @@
       const levels = [...new Set(ranking.map((row) => row.cases[key].items[code]))].slice(0, 3);
       const places = levels.map((value, index) => {
         const tied = ranking.filter((row) => row.cases[key].items[code] === value);
-        return `<li><span>0${index + 1}</span><div>${tied.map((row) => `<b style="${vendorStyle(row)}">${vendorMark(row)}${esc(row.model)}</b>`).join("")}</div><strong>${fmt(value, 1)}</strong></li>`;
+        const entry = (row) => `<div class="checkpoint-model" style="${vendorStyle(row)}">${modelCell(row)}</div>`;
+        const extra = tied.length > 3
+          ? `<details class="tied-models"><summary>另 ${tied.length - 3} 个同分测评</summary>${tied.slice(3).map(entry).join("")}</details>`
+          : "";
+        return `<li><span>0${index + 1}</span><div>${tied.slice(0, 3).map(entry).join("")}${extra}</div><strong>${fmt(value, 1)}</strong></li>`;
       }).join("");
       return `<article class="checkpoint-card drop" style="--delay:${itemIndex * 70}ms"><header><span>${esc(code)}</span><h3>${esc(label)}</h3><b>REF ${fmt(meta.item_max[code], 1)}</b></header><ol>${places}</ol></article>`;
     }).join("");
@@ -308,8 +318,12 @@
   function bindTabs(root, renderer) {
     const pane = $(".tab-pane", root);
     $$('[data-key]', root).forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.classList.contains("on")));
       button.addEventListener("click", () => {
-        $$('[data-key]', root).forEach((item) => item.classList.toggle("on", item === button));
+        $$('[data-key]', root).forEach((item) => {
+          item.classList.toggle("on", item === button);
+          item.setAttribute("aria-pressed", String(item === button));
+        });
         pane.innerHTML = renderer(button.dataset.key);
         animateNumbers(pane);
         requestAnimationFrame(() => pane.classList.add("is-ready"));
@@ -318,6 +332,7 @@
   }
 
   function animateNumbers(root = document) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     $$(".countup", root).forEach((node) => {
       const target = Number(node.dataset.count);
       const digits = Number(node.dataset.digits);

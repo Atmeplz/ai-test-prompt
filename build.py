@@ -15,7 +15,7 @@ ROOT = pathlib.Path(__file__).resolve().parent
 PROJECT = ROOT.parent
 BOARD_JSON = PROJECT / "评分数据" / "out" / "board-data.json"
 SITE_JSON = ROOT / "data" / "site.json"
-ASSET_VERSION = "20260903-2"
+ASSET_VERSION = "20260909-1"
 
 ANNOUNCEMENT = {
     "id": "notice-002",
@@ -138,6 +138,7 @@ def head(title: str, description: str) -> str:
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(description)}">
 <link rel="stylesheet" href="assets/style.css?v={ASSET_VERSION}">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 </head>"""
 
 
@@ -161,7 +162,7 @@ def topnav(active: str) -> str:
         items.append(f'<a href="{href}"{current}><span>{en}</span><b>{zh}</b></a>')
     return f"""<header class="site-nav">
   <a class="nav-brand" href="index.html"><i></i><span>AI 能力专项测试<small>CAPABILITY BENCHMARK</small></span></a>
-  <nav>{''.join(items)}</nav>
+  <nav aria-label="主导航">{''.join(items)}</nav>
 </header>"""
 
 
